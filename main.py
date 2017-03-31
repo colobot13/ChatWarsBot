@@ -17,10 +17,10 @@ bot_username = 'ChatWarsBot'
 stock_bot = 'WarChatsEquip_bot'
 
 # ваш username или username человека, который может отправлять запросы этому скрипту
-admin_username = ''
+admin_username = 'colobot13'
 
 # username бота и/или человека, которые будут отправлять приказы
-order_usernames = ''
+order_usernames = 'colobot13'
 
 # имя замка
 castle_name = 'blue'
@@ -69,6 +69,8 @@ orders = {
     'corovan': '/go',
     'peshera': '🕸Пещера',
     'taverna': '🍺Взять кружку эля'
+    'kvesty': '🗺 Квесты'
+
 }
 
 captcha_answers = {
@@ -254,9 +256,13 @@ def parse_text(text, username, message_id):
                         action_list.append('+1 🛡Защита')
 
                 if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
+                    action_list.append(orders['kvesty'])
+                    sleep(2)
                     action_list.append(orders['peshera'])
 
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
+                    action_list.append(orders['kvesty'])
+                    sleep(2)
                     action_list.append(orders['les'])
 
                 elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
