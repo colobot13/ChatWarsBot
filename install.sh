@@ -77,5 +77,8 @@ echo -e "\e[32mСборка завершена.\e[0m"
 #bin/telegram-cli -D -e 'quit'
 
 # Запуск Telegram-cli
-#echo "Выполните вход в аккаунт!"
-./telegram-cli --json -P 1338
+echo "Выполните вход в аккаунт!"
+bin/telegram-cli --json -k tg-server.pub -P 1338
+bin/telegram-cli -q
+
+chmod -R 777 /root/.telegram-cli
