@@ -144,7 +144,7 @@ def queue_worker():
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
     #print(sender.contacts_search(stock_bot))
-    sender.dialog_list()
+    #sender.dialog_list()
     sleep(3)
     while True:
         try:
