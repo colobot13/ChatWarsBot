@@ -61,21 +61,19 @@ orders = {
     'lesnoi_fort': '🛢Научный центр',
     'les': '🛰Помочь кораблю',
     'gorni_fort': '💎Ресурсный центр',
-    'gora': '⛰',
+    #'gora': '⛰',
     'cover': '🎚Оборона',
     'attack': '💣Нападение',
-    'cover_symbol': '🛡',
+    #'cover_symbol': '🛡',
     'hero': '👨‍🚀 Пилот',
     'corovan': '/go',
     'peshera': '🔎Изучить планету',
     'taverna': '🍺Взять кружку эля',
-    
     'kvesty': '⌨️ Терминал'
 
 }
 
 captcha_answers = {
-    # блядь, кольцов, ну и хуйню же ты придумал
     'watermelon_n_cherry': '🍉🍒',
     'bread_n_cheese': '🍞🧀',
     'cheese': '🧀',
@@ -111,7 +109,7 @@ sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=por
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
-get_info_diff = 600
+get_info_diff = 360
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -287,15 +285,15 @@ def parse_text(text, username, message_id):
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
                             "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
                             "Соперник найден" not in text and "Синий замок" not in text and \
-                            "Синего замка" not in text and "Чат фракции" not in text and \
+                            "Синего замка" not in text and "Общение внутри фракции" not in text and \
                             "Победил пилот" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
-                with open('taverna.txt', 'a+') as f:
-                    f.seek(0)
-                    for line in f:
-                        if text[0:8] in line:
-                            break
-                    else:
-                        f.write(text + '\n')
+                #with open('taverna.txt', 'a+') as f:
+                #    f.seek(0)
+                #    for line in f:
+                #        if text[0:8] in line:
+                #            break
+                #    else:
+                #        f.write(text + '\n')
                 action_list.append(orders['hero'])
                 lt_info = time()
 
