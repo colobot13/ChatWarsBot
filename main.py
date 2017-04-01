@@ -74,7 +74,6 @@ orders = {
 }
 
 captcha_answers = {
-    # блядь, кольцов, ну и хуйню же ты придумал
     'watermelon_n_cherry': '🍉🍒',
     'bread_n_cheese': '🍞🧀',
     'cheese': '🧀',
