@@ -68,7 +68,6 @@ orders = {
     'hero': '👨‍🚀 Пилот',
     'corovan': '/go',
     'peshera': '🔎Изучить планету',
-    
     'taverna': '🍺Взять кружку эля',
     
     'kvesty': '⌨️ Терминал'
@@ -118,7 +117,7 @@ last_captcha_id = 0
 
 bot_enabled = True
 arena_enabled = True
-taverna_enabled = True
+taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
 corovan_enabled = True
