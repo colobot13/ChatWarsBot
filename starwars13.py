@@ -147,6 +147,7 @@ def queue_worker():
     print(sender.contacts_search(captcha_bot))
     print(sender.contacts_search(admin_username))
     print(sender.contacts_search(stock_bot))
+    print(sender.contacts_search(oyster_bot))
     #sender.dialog_list()
     sleep(3)
     while True:
@@ -231,7 +232,7 @@ def parse_text(text, username, message_id):
                 
             # Космические КОРОВАНЫ
             #if corovan_enabled and text.find(' /intercept') != -1:
-            if text.find('/intercept') != -1:
+            elif text.find('/intercept') != -1:
                 log('Ловлю корован')
                 action_list.append(orders['cosmocorovan'])    
 
@@ -240,6 +241,10 @@ def parse_text(text, username, message_id):
                 lt_arena = time()
                 lt_info = time()
                 action_list.append(orders['hero'])
+                
+            # Оправим репорт если это сообщение о итоге быитвы на арене  
+            elif text.find('/arenatop') != -1:
+                fwd(oyster_bot, message_id)    
 
             elif text.find('Космическая битва через') != -1:
                 log('Проверяю состояние героя')
@@ -313,14 +318,11 @@ def parse_text(text, username, message_id):
             elif text.find('Содержимое склада') != -1:
                 fwd(stock_bot, message_id)
                 
-            elif text.find('Победил пилот') != -1:
-                fwd(oyster_bot, message_id)    
-
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
                             "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
                             "Соперник найден" not in text and "Синий замок" not in text and \
                             "Синего замка" not in text and "Общение внутри фракции" not in text and \
-                            "Победил пилот" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
+                            and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
                 # Пока уберу                
                 #with open('taverna.txt', 'a+') as f:
                 #    f.seek(0)
