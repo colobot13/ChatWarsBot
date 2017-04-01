@@ -53,22 +53,24 @@ for opt, arg in opts:
         port = int(arg)
 
 orders = {
-    'red': '🇮🇲',
-    'black': '🇬🇵',
-    'white': '🇨🇾',
-    'yellow': '🇻🇦',
-    'blue': '🇪🇺',
-    'lesnoi_fort': '🌲Лесной форт',
+    'red': '⭕️',
+    'black': '⚫️',
+    'white': '🌐',
+    'yellow': '☠️',
+    'blue': '⚖️',
+    'lesnoi_fort': '🛢Научный центр',
     'les': '🛰Помочь кораблю',
-    'gorni_fort': '⛰Горный форт',
+    'gorni_fort': '💎Ресурсный центр',
     'gora': '⛰',
-    'cover': '🛡 Защита',
-    'attack': '⚔ Атака',
+    'cover': '🎚Оборона',
+    'attack': '💣Нападение',
     'cover_symbol': '🛡',
     'hero': '👨‍🚀 Пилот',
     'corovan': '/go',
-    'peshera': '🕸Пещера',
+    'peshera': '🔎Изучить планету',
+    
     'taverna': '🍺Взять кружку эля',
+    
     'kvesty': '⌨️ Терминал'
 
 }
@@ -110,7 +112,7 @@ sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=por
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
-get_info_diff = 360
+get_info_diff = 600
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -140,10 +142,10 @@ def queue_worker():
     global get_info_diff
     lt_info = 0
     # гребаная магия
-    #print(sender.contacts_search(bot_username))
-    #print(sender.contacts_search(captcha_bot))
-    #print(sender.contacts_search(admin_username))
-    #print(sender.contacts_search(stock_bot))
+    print(sender.contacts_search(bot_username))
+    print(sender.contacts_search(captcha_bot))
+    print(sender.contacts_search(admin_username))
+    print(sender.contacts_search(stock_bot))
     #sender.dialog_list()
     sleep(3)
     while True:
@@ -223,10 +225,10 @@ def parse_text(text, username, message_id):
                 lt_info = time()
                 action_list.append(orders['hero'])
 
-            elif text.find('Битва пяти замков через') != -1:
+            elif text.find('Космическая битва через') != -1:
                 hero_message_id = message_id
-                m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
-                state = re.search('Состояние:\\n(.*)\\n', text)
+                m = re.search('Космическая битва через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
+                state = re.search('Статус:\\n(.*)\\n', text)
                 if not m.group(1):
                     if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
@@ -241,19 +243,19 @@ def parse_text(text, username, message_id):
                     return
 
                 log('Времени достаточно')
-                gold = int(re.search('💰([0-9]+)', text).group(1))
-                endurance = int(re.search('Выносливость: ([0-9]+)', text).group(1))
+                gold = int(re.search('💴([0-9]+)', text).group(1))
+                endurance = int(re.search('Топливо: ([0-9]+)', text).group(1))
                 log('Золото: {0}, выносливость: {1}'.format(gold, endurance))
 
-                if text.find('/level_up') != -1 and '/level_up' not in action_list:
-                    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
-                    defence = int(re.search('Защита: ([0-9]+)', text).group(1))
-                    action_list.append('/level_up')
-                    log('level_up')
-                    if damage > defence:
-                        action_list.append('+1 ⚔Атака')
-                    else:
-                        action_list.append('+1 🛡Защита')
+                #if text.find('/level_up') != -1 and '/level_up' not in action_list:
+                #    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
+                #    defence = int(re.search('Защита: ([0-9]+)', text).group(1))
+                #    action_list.append('/level_up')
+                #    log('level_up')
+                #    if damage > defence:
+                #        action_list.append('+1 ⚔Атака')
+                #    else:
+                #        action_list.append('+1 🛡Защита')
 
                 if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
                     action_list.append(orders['kvesty'])
@@ -284,10 +286,10 @@ def parse_text(text, username, message_id):
                 fwd(stock_bot, message_id)
 
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
-                            "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
+                            "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
                             "Соперник найден" not in text and "Синий замок" not in text and \
-                            "Синего замка" not in text and "Общение внутри замка" not in text and \
-                            "Победил воин" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
+                            "Синего замка" not in text and "Чат фракции" not in text and \
+                            "Победил пилот" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
                 with open('taverna.txt', 'a+') as f:
                     f.seek(0)
                     for line in f:
