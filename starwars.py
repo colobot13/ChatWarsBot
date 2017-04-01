@@ -232,8 +232,11 @@ def parse_text(text, username, message_id):
             elif text.find('Космическая битва через') != -1:
                 log('Космическая битва через')
                 hero_message_id = message_id
+                log(hero_message_id)
                 m = re.search('Космическая битва через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
+                log(m)
                 state = re.search('Статус:\\n(.*)\\n', text)
+                log(state)
                 if not m.group(1):
                     log('if not m.group(1)')
                     log(m.group(1))
