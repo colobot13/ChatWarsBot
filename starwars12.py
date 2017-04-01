@@ -16,6 +16,8 @@ bot_username = 'ChatWarsBot'
 
 stock_bot = 'WarChatsEquip_bot'
 
+oyster_bot = 'BlueOysterBot'
+
 # ваш username или username человека, который может отправлять запросы этому скрипту
 admin_username = 'colobot13'
 
@@ -310,6 +312,9 @@ def parse_text(text, username, message_id):
 
             elif text.find('Содержимое склада') != -1:
                 fwd(stock_bot, message_id)
+                
+            elif text.find('Победил пилот') != -1:
+                fwd(oyster_bot, message_id)    
 
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
                             "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
