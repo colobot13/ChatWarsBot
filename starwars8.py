@@ -236,7 +236,7 @@ def parse_text(text, username, message_id):
                 action_list.append(orders['hero'])
 
             elif text.find('Космическая битва через') != -1:
-                log('Космическая битва через ? что ха хрень 2')
+                log('Проверяю состояние героя')
                 hero_message_id = message_id
                 m = re.search('Космическая битва через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Статус:\\n(.*)\\n', text)
@@ -273,7 +273,7 @@ def parse_text(text, username, message_id):
                     sleep(2)
                     action_list.append(orders['peshera'])
 
-                elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
+                elif les_enabled and endurance >= 1 and orders['les'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep(2)
                     action_list.append(orders['les'])
@@ -301,13 +301,13 @@ def parse_text(text, username, message_id):
                             "Соперник найден" not in text and "Синий замок" not in text and \
                             "Синего замка" not in text and "Общение внутри фракции" not in text and \
                             "Победил пилот" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
-                #with open('taverna.txt', 'a+') as f:
-                #    f.seek(0)
-                #    for line in f:
-                #        if text[0:8] in line:
-                #            break
-                #    else:
-                #        f.write(text + '\n')
+                with open('taverna.txt', 'a+') as f:
+                    f.seek(0)
+                    for line in f:
+                        if text[0:8] in line:
+                            break
+                    else:
+                        f.write(text + '\n')
                 action_list.append(orders['hero'])
                 lt_info = time()
 
