@@ -61,16 +61,15 @@ orders = {
     'lesnoi_fort': '🛢Научный центр',
     'les': '🛰Помочь кораблю',
     'gorni_fort': '💎Ресурсный центр',
-    #'gora': '⛰',
     'cover': '🎚Оборона',
     'attack': '💣Нападение',
-    #'cover_symbol': '🛡',
     'hero': '👨‍🚀 Пилот',
     'corovan': '/go',
     'cosmocorovan': '/intercept',
     'peshera': '🔎Изучить планету',
     'taverna': '🍺Взять кружку эля',
-    'kvesty': '⌨️ Терминал'
+    'kvesty': '⌨️ Терминал',
+    'grabit': '🐫ГРАБИТЬ КОСМИЧЕСКИЕ КОРОВАНЫ'
 
 }
 
@@ -118,12 +117,13 @@ last_captcha_id = 0
 bot_enabled = True
 arena_enabled = True
 taverna_enabled = False
-les_enabled = True
+les_enabled = False
 peshera_enabled = False
 corovan_enabled = True
 order_enabled = True
 auto_def_enabled = True
 donate_enabled = False
+grabit_enabled = True
 
 
 @coroutine
@@ -180,6 +180,7 @@ def parse_text(text, username, message_id):
     global auto_def_enabled
     global donate_enabled
     global last_captcha_id
+    global grabit_enabled
     if username == bot_username:
         log('Получили сообщение от бота. Проверяем условия')
 
@@ -267,20 +268,31 @@ def parse_text(text, username, message_id):
                 #        action_list.append('+1 ⚔Атака')
                 #    else:
                 #        action_list.append('+1 🛡Защита')
-
+                
+                
+                # Грабить корованы
+                if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
+                    action_list.append(orders['kvesty'])
+                    sleep(2)
+                    action_list.append(orders['grabit'])
+                
+                # Ходить в пещеру
                 if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep(2)
                     action_list.append(orders['peshera'])
-
+                    
+                # Ходить в лес
                 elif les_enabled and endurance >= 1 and orders['les'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep(2)
                     action_list.append(orders['les'])
-
+                    
+                # Ходить на арену
                 elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
                     action_list.append('🔎Поиск соперника')
 
+                # Ходить в таверну
                 elif taverna_enabled and gold >= 20 and orders['taverna'] not in action_list and \
                         (dt.datetime.now().time() >= dt.time(19) or dt.datetime.now().time() < dt.time(6)):
                     action_list.append(orders['taverna'])
@@ -301,13 +313,14 @@ def parse_text(text, username, message_id):
                             "Соперник найден" not in text and "Синий замок" not in text and \
                             "Синего замка" not in text and "Общение внутри фракции" not in text and \
                             "Победил пилот" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
-                with open('taverna.txt', 'a+') as f:
-                    f.seek(0)
-                    for line in f:
-                        if text[0:8] in line:
-                            break
-                    else:
-                        f.write(text + '\n')
+                # Пока уберу                
+                #with open('taverna.txt', 'a+') as f:
+                #    f.seek(0)
+                #    for line in f:
+                #        if text[0:8] in line:
+                #            break
+                #    else:
+                #        f.write(text + '\n')
                 action_list.append(orders['hero'])
                 lt_info = time()
 
@@ -352,8 +365,10 @@ def parse_text(text, username, message_id):
                     '#disable_les - Выключить лес',
                     '#enable_peshera - Включить пещеры',
                     '#disable_peshera - Выключить пещеры',
-                    '#enable_corovan - Включить корован',
-                    '#disable_corovan - Выключить корован',
+                    '#enable_grabit - Включить грабить корованы',
+                    '#disable_grabit - Выключить грабить корованы',
+                    '#enable_corovan - Включить останавливать корованы',
+                    '#disable_corovan - Выключить останавливать корованы',
                     '#enable_order - Включить приказы',
                     '#disable_order - Выключить приказы',
                     '#enable_auto_def - Включить авто деф',
@@ -411,14 +426,22 @@ def parse_text(text, username, message_id):
             elif text == '#disable_peshera':
                 peshera_enabled = False
                 send_msg(admin_username, 'Пещера успешно выключена')
-
-            # Вкл/выкл корована
+                
+            # Вкл/выкл грабить корованы
+            elif text == '#enable_grabit':
+                grabit_enabled = True
+                send_msg(admin_username, 'Грабить корованы включено')
+            elif text == '#disable_grabit':
+                grabit_enabled = False
+                send_msg(admin_username, 'Грабить корованы выключено')
+                
+            # Вкл/выкл Останавливать корованы
             elif text == '#enable_corovan':
                 corovan_enabled = True
-                send_msg(admin_username, 'Корованы успешно включены')
+                send_msg(admin_username, 'Останавливать корованы успешно включено')
             elif text == '#disable_corovan':
                 corovan_enabled = False
-                send_msg(admin_username, 'Корованы успешно выключены')
+                send_msg(admin_username, 'Останавливать корованы успешно выключено')
 
             # Вкл/выкл команд
             elif text == '#enable_order':
