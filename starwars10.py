@@ -222,11 +222,14 @@ def parse_text(text, username, message_id):
 
         if bot_enabled:
             #log('Бот включен')
-            if corovan_enabled and text.find(' /go') != -1:
+            #if corovan_enabled and text.find(' /go') != -1:
+            if text.find('/go') != -1:
                 log('Ловлю корован')
                 action_list.append(orders['corovan'])
+                
             # Космические КОРОВАНЫ
-            if corovan_enabled and text.find(' /intercept') != -1:
+            #if corovan_enabled and text.find(' /intercept') != -1:
+            if text.find('/intercept') != -1:
                 log('Ловлю корован')
                 action_list.append(orders['cosmocorovan'])    
 
