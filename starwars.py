@@ -230,7 +230,7 @@ def parse_text(text, username, message_id):
                 action_list.append(orders['hero'])
 
             elif text.find('Космическая битва через') != -1:
-                log('Космическая битва через')
+                log('Космическая битва через ? что ха хрень')
                 hero_message_id = message_id
                 log(hero_message_id)
                 m = re.search('Космическая битва через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
