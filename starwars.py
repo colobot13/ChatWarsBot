@@ -182,6 +182,7 @@ def parse_text(text, username, message_id):
         log('Получили сообщение от бота. Проверяем условия')
 
         if "На выходе из замка охрана никого не пропускает" in text:
+            log('На выходе из замка охрана никого не пропускает')
             with open('captcha.txt', 'a+') as f:
                 f.seek(0)
                 for line in f:
@@ -198,6 +199,7 @@ def parse_text(text, username, message_id):
             bot_enabled = False
 
         elif 'Не умничай!' in text or 'Ты долго думал, аж вспотел от напряжения' in text or 'Не шути со стражниками' in text:
+            log('Командир, у нас проблемы с капчой!')
             send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
             bot_enabled = False
             if last_captcha_id != 0:
@@ -206,27 +208,35 @@ def parse_text(text, username, message_id):
                 send_msg(admin_username, 'Капча не найдена?')
 
         elif 'Ты слишком устал, возвращайся когда отдохнешь.' in text:
+            log('Не угадали с капчей, вырубаю бота')
             send_msg(admin_username, "Не угадали с капчей, вырубаю бота")
             bot_enabled = False
 
         elif 'Ты ответил правильно' in text:
+            log('Ура, угадали капчу! Запускаю бота')
             send_msg(admin_username, "Ура, угадали капчу! Запускаю бота")
             bot_enabled = True
 
         if bot_enabled:
+            log('Бот включен')
             if corovan_enabled and text.find(' /go') != -1:
+                log('Ловлю корован')
                 action_list.append(orders['corovan'])
 
             elif text.find('Сражаться можно не чаще чем один раз в час.') != -1:
+                log('Сражаться можно не чаще чем один раз в час.')
                 lt_arena = time()
                 lt_info = time()
                 action_list.append(orders['hero'])
 
             elif text.find('Космическая битва через') != -1:
+                log('Космическая битва через')
                 hero_message_id = message_id
                 m = re.search('Космическая битва через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Статус:\\n(.*)\\n', text)
                 if not m.group(1):
+                    log('if not m.group(1)')
+                    log(m.group(1))
                     if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
