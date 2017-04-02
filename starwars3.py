@@ -366,16 +366,17 @@ def parse_text(text, username, message_id):
                 action_list.append(orders['hero'])
                 lt_info = time()
 
-    elif username == 'ChatWarsCaptchaBot':
+    elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
             sleep(3)
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
-            
-    elif username == bot_report and admin_username == 'colobot13':
-        if text.find('По итогам сражений') != -1 and castle_name == 'blue':
-            fwd(oyster_bot, message_id)
+    elif username == stock_bot:
+        send_msg(admin_username, "Проверка связи")           
+    #elif username == bot_report and admin_username == 'colobot13':
+    #    if text.find('По итогам сражений') != -1 and castle_name == 'blue':
+    #        fwd(oyster_bot, message_id)
 
     else:
         if bot_enabled and order_enabled and username in order_usernames:
