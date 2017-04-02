@@ -245,7 +245,7 @@ def parse_text(text, username, message_id):
                 lt_info = time()
                 action_list.append(orders['hero'])
                 
-            # Оправим репорт если это сообщение о итоге быитвы на арене   
+            # Оправим репорт если это сообщение о итоге битвы на арене   
             elif text.find('Таблица победителей') != -1:  
                 if castle_name == 'blue':
                     fwd(stock_bot, message_id)
@@ -364,7 +364,7 @@ def parse_text(text, username, message_id):
             action_list.append(text)
             bot_enabled = True
             
-    elif username == bot_report:
+    elif username == bot_report and admin_username == 'colobot13':
         if text.find('По итогам сражений') != -1 and castle_name == 'blue':
             fwd(oyster_bot, message_id)
 
