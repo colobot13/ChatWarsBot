@@ -244,8 +244,9 @@ def parse_text(text, username, message_id):
                 
             # Оправим репорт если это сообщение о итоге быитвы на арене  
             elif text.find('/arenatop') != -1:
-                fwd(oyster_bot, message_id)
-                lt_arena = time()
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
+                    lt_arena = time()
 
             elif text.find('Космическая битва через') != -1:
                 log('Проверяю состояние героя')
@@ -322,7 +323,8 @@ def parse_text(text, username, message_id):
                 action_list.append(cover_chosen)
 
             elif text.find('Содержимое склада') != -1:
-                fwd(stock_bot, message_id)
+                if castle_name == 'blue':
+                    fwd(stock_bot, message_id)
                 
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
                             "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
