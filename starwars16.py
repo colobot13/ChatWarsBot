@@ -244,7 +244,8 @@ def parse_text(text, username, message_id):
                 
             # Оправим репорт если это сообщение о итоге быитвы на арене  
             elif text.find('/arenatop') != -1:
-                fwd(oyster_bot, message_id)    
+                fwd(oyster_bot, message_id)
+                lt_arena = time()
 
             elif text.find('Космическая битва через') != -1:
                 log('Проверяю состояние героя')
@@ -299,7 +300,7 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['les'])
                     
                 # Ходить на арену
-                elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
+                elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3700:
                     action_list.append('🔎Поиск соперника')
 
                 # Ходить в таверну
@@ -312,7 +313,12 @@ def parse_text(text, username, message_id):
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
+                # Добавил задержку рандомную
+                sleep_time = random.randint(3, 10)
+                sleep(sleep_time)
                 action_list.append(attack_chosen)
+                sleep_time = random.randint(3, 10)
+                sleep(sleep_time)
                 action_list.append(cover_chosen)
 
             elif text.find('Содержимое склада') != -1:
