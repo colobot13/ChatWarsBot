@@ -14,6 +14,8 @@ import random
 # username игрового бота
 bot_username = 'ChatWarsBot'
 
+bot_report = 'ChatWarsReports'
+
 stock_bot = 'WarChatsEquip_bot'
 
 oyster_bot = 'BlueOysterBot'
@@ -148,6 +150,7 @@ def queue_worker():
     print(sender.contacts_search(admin_username))
     print(sender.contacts_search(stock_bot))
     print(sender.contacts_search(oyster_bot))
+    print(sender.contacts_search(bot_report))
     #sender.dialog_list()
     sleep(3)
     while True:
@@ -242,11 +245,23 @@ def parse_text(text, username, message_id):
                 lt_info = time()
                 action_list.append(orders['hero'])
                 
-            # Оправим репорт если это сообщение о итоге быитвы на арене  
-            elif text.find('/arenatop') != -1:
+            # Оправим репорт если это сообщение о итоге быитвы на арене   
+            elif text.find('Таблица победителей') != -1:  
+                if castle_name == 'blue':
+                    fwd(stock_bot, message_id)
+                    lt_arena = time()
+                    if text.find('Поздравляем!') != -1:
+                        fwd(oyster_bot, message_id)
+                        
+            # Оправим репорт если это сообщение о донате  
+            elif text.find('Рейтинг меценатов') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)   
+
+            # Оправим результаты боя в ойстер
+            elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
-                    lt_arena = time()
 
             elif text.find('Космическая битва через') != -1:
                 log('Проверяю состояние героя')
@@ -348,6 +363,10 @@ def parse_text(text, username, message_id):
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
+            
+    elif username == bot_report:
+        if text.find('По итогам сражений') != -1 and castle_name == 'blue':
+            fwd(oyster_bot, message_id)
 
     else:
         if bot_enabled and order_enabled and username in order_usernames:
