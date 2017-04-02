@@ -317,6 +317,9 @@ def parse_text(text, username, message_id):
                     
                 # Ходить на арену
                 elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3700:
+                    if gold >= 30:
+                        action_list.append('/donate {0}'.format(1))
+                        sleep(1)
                     action_list.append('🔎Поиск соперника')
 
                 # Ходить в таверну
