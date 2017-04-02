@@ -123,11 +123,11 @@ last_captcha_id = 0
 bot_enabled = True
 arena_enabled = True
 taverna_enabled = False
-les_enabled = True
+les_enabled = False
 peshera_enabled = False
 corovan_enabled = False
 order_enabled = True
-auto_def_enabled = True
+auto_def_enabled = False
 donate_enabled = False
 grabit_enabled = True
 
@@ -260,11 +260,13 @@ def parse_text(text, username, message_id):
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)   
 
+            # Не работает        
             # Оправим результаты боя в ойстер
             elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
-            
+                    
+            # Не работает вроде
             # Оправим Топ игроков
             elif text.find('Топ игроков') != -1:  
                 if castle_name == 'blue':
@@ -324,6 +326,8 @@ def parse_text(text, username, message_id):
                     
                 # Ходить на арену
                 elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3700:
+                    action_list.append('/top')
+                    sleep(2)
                     if gold >= 30:
                         action_list.append('/donate {0}'.format(1))
                         sleep(2)
