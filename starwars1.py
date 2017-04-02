@@ -73,6 +73,8 @@ orders = {
     'peshera': '🔎Изучить планету',
     'taverna': '🍺Взять кружку эля',
     'kvesty': '⌨️ Терминал',
+    'zamok': '📡 База',
+    'arena': '📯Звездная арена',
     'grabit': '🐫ГРАБИТЬ КОСМИЧЕСКИЕ КОРОВАНЫ'
 
 }
@@ -319,7 +321,11 @@ def parse_text(text, username, message_id):
                 elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3700:
                     if gold >= 30:
                         action_list.append('/donate {0}'.format(1))
-                        sleep(1)
+                        sleep(2)
+                    action_list.append(orders['zamok'])
+                    sleep(2)
+                    action_list.append(orders['arena'])
+                    sleep(2)
                     action_list.append('🔎Поиск соперника')
 
                 # Ходить в таверну
