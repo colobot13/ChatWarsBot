@@ -264,6 +264,11 @@ def parse_text(text, username, message_id):
             elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
+            
+            # Оправим Топ игроков
+            elif text.find('Топ игроков') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
 
             elif text.find('Космическая битва через') != -1:
                 log('Проверяю состояние героя')
