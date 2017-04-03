@@ -363,7 +363,7 @@ def parse_text(text, username, message_id):
                             "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
                             "Соперник найден" not in text and "Синий замок" not in text and \
                             "Синего замка" not in text and "Общение внутри фракции" not in text and \
-                            not re.findall(r'\bнанес\b(.*)\bудар\b', s):
+                            not re.findall(r'\bнанес\b(.*)\bудар\b', text):
                 # Пока уберу                
                 #with open('taverna.txt', 'a+') as f:
                 #    f.seek(0)
@@ -537,9 +537,10 @@ def parse_text(text, username, message_id):
                     'Приказы включены: {5}',
                     'Авто деф включен: {6}',
                     'Донат включен: {7}',
-                    'Таверна включена: {8}'
+                    'Таверна включена: {8}',
+                    'Гоп-стоп корованов включен: {9}'
                 ]).format(bot_enabled, arena_enabled, les_enabled, peshera_enabled, corovan_enabled, order_enabled,
-                          auto_def_enabled, donate_enabled, taverna_enabled))
+                          auto_def_enabled, donate_enabled, taverna_enabled,  grabit_enabled))
 
             # Информация о герое
             elif text == '#hero':
