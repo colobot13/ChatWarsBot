@@ -12,13 +12,15 @@ import _thread
 import random
 
 # username игрового бота
-bot_username = 'Chat'+ 'Wars' +'Bot' 
+bot_username = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s' +'B'+'o'+'t' 
 
-bot_report = 'ChatWarsReports'
+bot_report = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'R'+'e'+'p'+'o'+'r'+'t'+'s'
 
-stock_bot = 'WarChatsEquip_bot'
+stock_bot = 'W'+'a'+'r'+'C'+'h'+'a'+'t'+'s'+'E'+'q'+'u'+'i'+'p'+'_'+'b'+'o'+'t'
 
-oyster_bot = 'BlueOysterBot'
+oyster_bot = 'B'+'l'+'u'+'e'+'O'+'y'+'s'+'t'+'e'+'r'+'B'+'o'+'t'
+
+captcha_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'C'+'a'+'p'+'t'+'c'+'h'+'a'+'B'+'o'+'t'
 
 # ваш username или username человека, который может отправлять запросы этому скрипту
 admin_username = ''
@@ -28,8 +30,6 @@ order_usernames = ''
 
 # имя замка
 castle_name = 'blue'
-
-captcha_bot = 'ChatWarsCaptchaBot'
 
 # путь к сокет файлу
 socket_path = ''
