@@ -363,7 +363,7 @@ def parse_text(text, username, message_id):
                             "Ошибка направления команды терминалу" not in text and "Солнечный ветер завывает" not in text and \
                             "Соперник найден" not in text and "Синий замок" not in text and \
                             "Синего замка" not in text and "Общение внутри фракции" not in text and \
-                            "Чат фракции:" not in text and "/shop" not in text and
+                            "Чат фракции:" not in text and "shop" not in text and \
                             not re.findall(r'\bнанес\b(.*)\bудар\b', text):
                 # Пока уберу                
                 #with open('taverna.txt', 'a+') as f:
