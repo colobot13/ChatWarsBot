@@ -126,11 +126,11 @@ arena_enabled = True
 taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
-corovan_enabled = False
+corovan_enabled = True
 order_enabled = True
 auto_def_enabled = True
 donate_enabled = False
-grabit_enabled = True
+grabit_enabled = False
 
 
 @coroutine
