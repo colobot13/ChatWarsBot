@@ -363,7 +363,7 @@ def parse_text(text, username, message_id):
                 
                 # Уберу пока режим полуавтоматический
                 #action_list.append(orders['hero'])
-                #lt_info = time()
+                lt_info = time()
 
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
