@@ -12,7 +12,7 @@ import _thread
 import random
 
 # username игрового бота
-bot_username = 'ChatWarsBot'
+bot_username = 'Chat'+ 'Wars' +'Bot' 
 
 bot_report = 'ChatWarsReports'
 
@@ -21,10 +21,10 @@ stock_bot = 'WarChatsEquip_bot'
 oyster_bot = 'BlueOysterBot'
 
 # ваш username или username человека, который может отправлять запросы этому скрипту
-admin_username = 'colobot13'
+admin_username = ''
 
 # username бота и/или человека, которые будут отправлять приказы
-order_usernames = 'colobot13'
+order_usernames = ''
 
 # имя замка
 castle_name = 'blue'
