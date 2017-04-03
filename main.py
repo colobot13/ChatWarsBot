@@ -12,20 +12,24 @@ import _thread
 import random
 
 # username игрового бота
-bot_username = 'ChatWarsBot'
+bot_username = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s' +'B'+'o'+'t' 
 
-stock_bot = 'WarChatsEquip_bot'
+bot_report = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'R'+'e'+'p'+'o'+'r'+'t'+'s'
+
+stock_bot = 'W'+'a'+'r'+'C'+'h'+'a'+'t'+'s'+'E'+'q'+'u'+'i'+'p'+'_'+'b'+'o'+'t'
+
+oyster_bot = 'B'+'l'+'u'+'e'+'O'+'y'+'s'+'t'+'e'+'r'+'B'+'o'+'t'
+
+captcha_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'C'+'a'+'p'+'t'+'c'+'h'+'a'+'B'+'o'+'t'
 
 # ваш username или username человека, который может отправлять запросы этому скрипту
-admin_username = 'colobot13'
+admin_username = ''
 
 # username бота и/или человека, которые будут отправлять приказы
-order_usernames = 'colobot13'
+order_usernames = ''
 
 # имя замка
 castle_name = 'blue'
-
-captcha_bot = 'ChatWarsCaptchaBot'
 
 # путь к сокет файлу
 socket_path = ''
@@ -70,6 +74,9 @@ orders = {
     'peshera': '🕸Пещера',
     'taverna': '🍺Взять кружку эля',
     'kvesty': '🗺 Квесты'
+    'zamok': '🏰Замок',
+    'arena': '📯Арена',
+    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
 
 }
 
@@ -95,7 +102,8 @@ states_map = {
     'arena': '📯На арене',
     'les': '🌲В лесу',
     'peshera': '🕸В пещере',
-    'taverna': '🍺Пьешь в таверне'
+    'taverna': '🍺Пьешь в таверне',
+    'korovan': '🐫Возишься с КОРОВАНАМИ'
 }
 
 arena_cover = ['🛡головы', '🛡корпуса', '🛡ног']
@@ -115,13 +123,14 @@ last_captcha_id = 0
 
 bot_enabled = True
 arena_enabled = True
-taverna_enabled = True
+taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
-corovan_enabled = True
+corovan_enabled = False
 order_enabled = True
 auto_def_enabled = True
 donate_enabled = False
+grabit_enabled = True
 
 
 @coroutine
@@ -139,10 +148,12 @@ def queue_worker():
     global get_info_diff
     lt_info = 0
     # гребаная магия
-    #print(sender.contacts_search(bot_username))
-    #print(sender.contacts_search(captcha_bot))
-    #print(sender.contacts_search(admin_username))
-    #print(sender.contacts_search(stock_bot))
+    print(sender.contacts_search(bot_username))
+    print(sender.contacts_search(captcha_bot))
+    print(sender.contacts_search(admin_username))
+    print(sender.contacts_search(stock_bot))
+    print(sender.contacts_search(oyster_bot))
+    print(sender.contacts_search(bot_report))
     #sender.dialog_list()
     sleep(3)
     while True:
@@ -178,6 +189,7 @@ def parse_text(text, username, message_id):
     global auto_def_enabled
     global donate_enabled
     global last_captcha_id
+    global grabit_enabled
     if username == bot_username:
         log('Получили сообщение от бота. Проверяем условия')
 
@@ -222,6 +234,31 @@ def parse_text(text, username, message_id):
                 lt_info = time()
                 action_list.append(orders['hero'])
 
+            # Оправим репорт если это сообщение о итоге битвы на арене   
+            elif text.find('Таблица победителей') != -1:  
+                if castle_name == 'blue':
+                    fwd(stock_bot, message_id)
+                    lt_arena = time()
+                    if text.find('Поздравляем!') != -1:
+                        fwd(oyster_bot, message_id)
+                        
+            # Оправим репорт если это сообщение о донате  
+            elif text.find('Рейтинг меценатов') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)   
+
+            # Не работает        
+            # Оправим результаты боя в ойстер
+            elif text.find('Твои результаты в бою:') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
+                    
+            # Не работает вроде
+            # Оправим Топ игроков
+            elif text.find('Топ игроков') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
+
             elif text.find('Битва пяти замков через') != -1:
                 hero_message_id = message_id
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
@@ -244,29 +281,49 @@ def parse_text(text, username, message_id):
                 endurance = int(re.search('Выносливость: ([0-9]+)', text).group(1))
                 log('Золото: {0}, выносливость: {1}'.format(gold, endurance))
 
-                if text.find('/level_up') != -1 and '/level_up' not in action_list:
-                    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
-                    defence = int(re.search('Защита: ([0-9]+)', text).group(1))
-                    action_list.append('/level_up')
-                    log('level_up')
-                    if damage > defence:
-                        action_list.append('+1 ⚔Атака')
-                    else:
-                        action_list.append('+1 🛡Защита')
+                #if text.find('/level_up') != -1 and '/level_up' not in action_list:
+                #    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
+                #    defence = int(re.search('Защита: ([0-9]+)', text).group(1))
+                #    action_list.append('/level_up')
+                #    log('level_up')
+                #    if damage > defence:
+                #        action_list.append('+1 ⚔Атака')
+                #    else:
+                #        action_list.append('+1 🛡Защита')
 
+                
+                # Грабить корованы
+                if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
+                    action_list.append(orders['kvesty'])
+                    sleep(2)
+                    action_list.append(orders['grabit'])
+                
+                # Ходить в пещеру
                 if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep(2)
                     action_list.append(orders['peshera'])
 
+                # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep(2)
                     action_list.append(orders['les'])
 
-                elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
+                # Ходить на арену
+                elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3700:
+                    action_list.append('/top')
+                    sleep(2)
+                    if gold >= 30:
+                        action_list.append('/donate {0}'.format(1))
+                        sleep(2)
+                    action_list.append(orders['zamok'])
+                    sleep(2)
+                    action_list.append(orders['arena'])
+                    sleep(2)
                     action_list.append('🔎Поиск соперника')
 
+                # Ходить в таверну
                 elif taverna_enabled and gold >= 20 and orders['taverna'] not in action_list and \
                         (dt.datetime.now().time() >= dt.time(19) or dt.datetime.now().time() < dt.time(6)):
                     action_list.append(orders['taverna'])
@@ -276,34 +333,48 @@ def parse_text(text, username, message_id):
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
+                # Добавил задержку рандомную
+                sleep_time = random.randint(3, 10)
+                sleep(sleep_time)
                 action_list.append(attack_chosen)
+                sleep_time = random.randint(3, 10)
+                sleep(sleep_time)
                 action_list.append(cover_chosen)
 
             elif text.find('Содержимое склада') != -1:
+                if castle_name == 'blue':
                 fwd(stock_bot, message_id)
 
+            # Здесь нужно все прописать на что не реагировать   
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
                             "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
                             "Соперник найден" not in text and "Синий замок" not in text and \
                             "Синего замка" not in text and "Общение внутри замка" not in text and \
-                            "Победил воин" not in text and not re.findall(r'\bнанес\b(.*)\bудар\b', s):
-                with open('taverna.txt', 'a+') as f:
-                    f.seek(0)
-                    for line in f:
-                        if text[0:8] in line:
-                            break
-                    else:
-                        f.write(text + '\n')
+                            "Победил воин" not in text and "shop" not in text and \
+                            not re.findall(r'\bнанес\b(.*)\bудар\b', text):
+                # Пока уберу                
+                #with open('taverna.txt', 'a+') as f:
+                #    f.seek(0)
+                #    for line in f:
+                #        if text[0:8] in line:
+                #            break
+                #    else:
+                #        f.write(text + '\n')
                 action_list.append(orders['hero'])
                 lt_info = time()
 
-    elif username == 'ChatWarsCaptchaBot':
+    elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
             sleep(3)
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
-
+    elif username == bot_report:
+        #elif username == bot_report and admin_username == 'colobot13':
+        #if text.find('По итогам сражений') != -1 and castle_name == 'blue':
+        fwd(oyster_bot, message_id)
+    #elif username == stock_bot:
+    #    fwd(admin_username, message_id)
     else:
         if bot_enabled and order_enabled and username in order_usernames:
             if text.find(orders['red']) != -1:
@@ -338,8 +409,10 @@ def parse_text(text, username, message_id):
                     '#disable_les - Выключить лес',
                     '#enable_peshera - Включить пещеры',
                     '#disable_peshera - Выключить пещеры',
-                    '#enable_corovan - Включить корован',
-                    '#disable_corovan - Выключить корован',
+                    '#enable_grabit - Включить грабить корованы',
+                    '#disable_grabit - Выключить грабить корованы',
+                    '#enable_corovan - Включить останавливать корованы',
+                    '#disable_corovan - Выключить останавливать корованы',
                     '#enable_order - Включить приказы',
                     '#disable_order - Выключить приказы',
                     '#enable_auto_def - Включить авто деф',
@@ -398,13 +471,21 @@ def parse_text(text, username, message_id):
                 peshera_enabled = False
                 send_msg(admin_username, 'Пещера успешно выключена')
 
-            # Вкл/выкл корована
+            # Вкл/выкл грабить корованы
+            elif text == '#enable_grabit':
+                grabit_enabled = True
+                send_msg(admin_username, 'Грабить корованы включено')
+            elif text == '#disable_grabit':
+                grabit_enabled = False
+                send_msg(admin_username, 'Грабить корованы выключено')
+                
+            # Вкл/выкл Останавливать корованы
             elif text == '#enable_corovan':
                 corovan_enabled = True
-                send_msg(admin_username, 'Корованы успешно включены')
+                send_msg(admin_username, 'Останавливать корованы успешно включено')
             elif text == '#disable_corovan':
                 corovan_enabled = False
-                send_msg(admin_username, 'Корованы успешно выключены')
+                send_msg(admin_username, 'Останавливать корованы успешно выключено')
 
             # Вкл/выкл команд
             elif text == '#enable_order':
@@ -444,9 +525,10 @@ def parse_text(text, username, message_id):
                     'Приказы включены: {5}',
                     'Авто деф включен: {6}',
                     'Донат включен: {7}',
-                    'Таверна включена: {8}'
+                    'Таверна включена: {8}',
+                    'Гоп-стоп корованов включен: {9}'
                 ]).format(bot_enabled, arena_enabled, les_enabled, peshera_enabled, corovan_enabled, order_enabled,
-                          auto_def_enabled, donate_enabled, taverna_enabled))
+                          auto_def_enabled, donate_enabled, taverna_enabled,  grabit_enabled))
 
             # Информация о герое
             elif text == '#hero':
