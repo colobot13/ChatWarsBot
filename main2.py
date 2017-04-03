@@ -343,7 +343,7 @@ def parse_text(text, username, message_id):
 
             elif text.find('Содержимое склада') != -1:
                 if castle_name == 'blue':
-                fwd(stock_bot, message_id)
+                    fwd(stock_bot, message_id)
 
             # Здесь нужно все прописать на что не реагировать   
             elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
