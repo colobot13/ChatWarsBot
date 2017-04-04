@@ -235,10 +235,10 @@ def parse_text(text, username, message_id):
                 action_list.append(orders['hero'])
 
             # Оправим репорт если это сообщение о итоге битвы на арене   
-            elif text.find('Таблица победителей') != -1:  
+            elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:  
+                lt_arena = time()
                 if castle_name == 'blue':
                     fwd(stock_bot, message_id)
-                    lt_arena = time()
                     if text.find('Поздравляем!') != -1:
                         fwd(oyster_bot, message_id)
                         
@@ -247,13 +247,11 @@ def parse_text(text, username, message_id):
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)   
 
-            # Не работает        
             # Оправим результаты боя в ойстер
             elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
                     
-            # Не работает вроде
             # Оправим Топ игроков
             elif text.find('Топ игроков') != -1:  
                 if castle_name == 'blue':
@@ -264,7 +262,7 @@ def parse_text(text, username, message_id):
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
-                    if m.group(2) and int(m.group(2)) <= 30:
+                    if m.group(2) and int(m.group(2)) <= 25:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
                                 gold = int(re.search('💰([0-9]+)', text).group(1))
@@ -311,12 +309,19 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['les'])
 
                 # Ходить на арену
-                elif arena_enabled and gold >= 5 and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3700:
+                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
                     action_list.append('/top')
                     sleep(2)
                     if gold >= 30:
                         action_list.append('/donate {0}'.format(1))
                         sleep(2)
+                    elif gold < 5:
+                        action_list.append('/s_101')
+                        sleep(1)
+                        action_list.append('/s_101')
+                        sleep(1)
+                        action_list.append('/s_101')
+                        sleep(1)
                     action_list.append(orders['zamok'])
                     sleep(2)
                     action_list.append(orders['arena'])
@@ -329,7 +334,7 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['taverna'])
 
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
-                lt_arena = time()
+                #lt_arena = time()
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
@@ -371,6 +376,14 @@ def parse_text(text, username, message_id):
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
+            
+    # Если пришло уведомление о арене      
+    elif username == stock_bot:
+        if len(text) <= 4 and text in captcha_answers.values():
+            if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
+                sleep(1)
+                fwd(oyster_bot, message_id)
+
     elif username == bot_report:
         #elif username == bot_report and admin_username == 'colobot13':
         #if text.find('По итогам сражений') != -1 and castle_name == 'blue':
@@ -586,6 +599,7 @@ def send_msg(to, message):
 
 
 def fwd(to, message_id):
+    sender.mark_read('@' + to)
     sender.fwd('@' + to, message_id)
 
 
