@@ -379,10 +379,9 @@ def parse_text(text, username, message_id):
             
     # Если пришло уведомление о арене      
     elif username == stock_bot:
-        if len(text) <= 4 and text in captcha_answers.values():
-            if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
-                sleep(1)
-                fwd(oyster_bot, message_id)
+        if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
+            sleep(1)
+            fwd(oyster_bot, message_id)
 
     elif username == bot_report:
         #elif username == bot_report and admin_username == 'colobot13':
