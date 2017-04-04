@@ -117,7 +117,7 @@ sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=por
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
-get_info_diff = 360
+get_info_diff = 460
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -162,7 +162,7 @@ def queue_worker():
 
             if time() - lt_info > get_info_diff:
                 lt_info = time()
-                get_info_diff = random.randint(300, 500)
+                get_info_diff = random.randint(350, 550)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
                 continue
