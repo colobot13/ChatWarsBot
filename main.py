@@ -156,7 +156,10 @@ def queue_worker():
     #print(sender.contacts_search(bot_report))
     sender.dialog_list()
     sleep(3)
-    send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
+    try:
+        send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
+    except Exception as err:
+        log('Ошибка отправки Привет Командир')    
     while True:
         try:
 
