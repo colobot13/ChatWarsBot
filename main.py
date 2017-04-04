@@ -380,11 +380,11 @@ def parse_text(text, username, message_id):
             action_list.append(text)
             bot_enabled = True
             
-    # Если пришло уведомление о арене      
+    # Если пришло уведомление о арене
     elif username == stock_bot:
         if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
             sleep(1)
-            fwd(oyster_bot, message_id)
+            fwd(bot_username, message_id)
 
     elif username == bot_report:
         #elif username == bot_report and admin_username == 'colobot13':
