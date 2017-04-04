@@ -241,6 +241,8 @@ def parse_text(text, username, message_id):
                     fwd(stock_bot, message_id)
                     if text.find('Поздравляем!') != -1:
                         fwd(oyster_bot, message_id)
+                action_list.append(orders['hero'])
+                lt_info = time()        
                         
             # Оправим репорт если это сообщение о донате  
             elif text.find('Рейтинг меценатов') != -1:  
@@ -250,10 +252,10 @@ def parse_text(text, username, message_id):
             # Оправим результаты боя в ойстер
             elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)
+                    fwd(oyster_bot, message_id) 
                     
             # Оправим Топ игроков
-            elif text.find('Топ игроков') != -1:  
+            elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
 
@@ -262,7 +264,7 @@ def parse_text(text, username, message_id):
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
-                    if m.group(2) and int(m.group(2)) <= 25:
+                    if m.group(2) and int(m.group(2)) <= 20:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
                                 gold = int(re.search('💰([0-9]+)', text).group(1))
@@ -368,7 +370,7 @@ def parse_text(text, username, message_id):
                 
                 # Уберу пока режим полуавтоматический
                 #action_list.append(orders['hero'])
-                lt_info = time()
+                #lt_info = time()
 
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
