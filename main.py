@@ -156,6 +156,7 @@ def queue_worker():
     print(sender.contacts_search(bot_report))
     #sender.dialog_list()
     sleep(3)
+    send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
     while True:
         try:
 
@@ -209,7 +210,7 @@ def parse_text(text, username, message_id):
             fwd(captcha_bot, message_id)
             bot_enabled = False
 
-        elif 'Не умничай!' in text or 'Ты долго думал, аж вспотел от напряжения' in text or 'Не шути со стражниками' in text:
+        elif 'Не умничай!' in text or 'Ты долго думал, аж вспотел' in text or 'Не шути со стражниками' in text:
             send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
             bot_enabled = False
             if last_captcha_id != 0:
