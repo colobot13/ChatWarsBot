@@ -353,12 +353,13 @@ def parse_text(text, username, message_id):
                     fwd(stock_bot, message_id)
 
             # Здесь нужно все прописать на что не реагировать   
-            elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
-                            "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
-                            "Соперник найден" not in text and "Синий замок" not in text and \
-                            "Синего замка" not in text and "Общение внутри замка" not in text and \
-                            "Победил воин" not in text and "shop" not in text and \
-                            not re.findall(r'\bнанес\b(.*)\bудар\b', text):
+            #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
+            #                "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
+            #                "Соперник найден" not in text and "Синий замок" not in text and \
+            #                "Синего замка" not in text and "Общение внутри замка" not in text and \
+            #                "Победил воин" not in text and "shop" not in text and \
+            #                not re.findall(r'\bнанес\b(.*)\bудар\b', text):
+                                
                 # Пока уберу                
                 #with open('taverna.txt', 'a+') as f:
                 #    f.seek(0)
