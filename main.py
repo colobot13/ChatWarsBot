@@ -262,6 +262,11 @@ def parse_text(text, username, message_id):
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
 
+            # Если битва во вот начнется то пока ничего не далаем
+            # Здесь нудно добавить проверку на установку дефа или атаку
+            elif text.find('Битва пяти замков через несколько секунд!') != -1:
+                return
+
             elif text.find('Битва пяти замков через') != -1:
                 hero_message_id = message_id
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
