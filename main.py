@@ -117,7 +117,7 @@ sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=por
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
-get_info_diff = 460
+get_info_diff = 360
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -147,7 +147,6 @@ def work_with_message(receiver):
 def queue_worker():
     global get_info_diff
     lt_info = 0
-    # гребаная магия
     #print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
@@ -165,7 +164,7 @@ def queue_worker():
 
             if time() - lt_info > get_info_diff:
                 lt_info = time()
-                get_info_diff = random.randint(350, 550)
+                get_info_diff = random.randint(400, 800)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
                 continue
@@ -256,7 +255,7 @@ def parse_text(text, username, message_id):
             # Оправим результаты боя в ойстер
             elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
-                    fwd(oyster_bot, message_id) 
+                    fwd(oyster_bot, message_id)
                     
             # Оправим Топ игроков
             elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
@@ -268,7 +267,7 @@ def parse_text(text, username, message_id):
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
-                    if m.group(2) and int(m.group(2)) <= 20:
+                    if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
                                 gold = int(re.search('💰([0-9]+)', text).group(1))
@@ -299,44 +298,56 @@ def parse_text(text, username, message_id):
                 # Грабить корованы
                 if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
                     action_list.append(orders['kvesty'])
-                    sleep(2)
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
                     action_list.append(orders['grabit'])
                 
                 # Ходить в пещеру
                 if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
                     action_list.append(orders['kvesty'])
-                    sleep(2)
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
                     action_list.append(orders['peshera'])
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
                     action_list.append(orders['kvesty'])
-                    sleep(2)
+                    sleep_time = random.randint(1, 2)
+                    sleep(sleep_time)
                     action_list.append(orders['les'])
 
                 # Ходить на арену
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
+                    sleep_time = random.randint(1, 2)
+                    sleep(sleep_time)
                     action_list.append('/top')
-                    sleep(2)
+                    sleep_time = random.randint(1, 2)
+                    sleep(sleep_time)
                     if gold >= 30:
                         action_list.append('/donate {0}'.format(1))
-                        sleep(2)
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
                     elif gold < 5:
                         action_list.append('/s_101')
-                        sleep(1)
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
                         action_list.append('/s_101')
-                        sleep(1)
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
                         action_list.append('/s_101')
-                        sleep(1)
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
                     action_list.append(orders['zamok'])
-                    sleep(2)
+                    sleep_time = random.randint(1, 2)
+                    sleep(sleep_time)
                     action_list.append(orders['arena'])
-                    sleep(2)
+                    sleep_time = random.randint(1, 2)
+                    sleep(sleep_time)
                     action_list.append('🔎Поиск соперника')
 
                 # Ходить в таверну
                 elif taverna_enabled and gold >= 20 and orders['taverna'] not in action_list and \
-                        (dt.datetime.now().time() >= dt.time(19) or dt.datetime.now().time() < dt.time(6)):
+                        (dt.datetime.now().time() >= dt.time(23) or dt.datetime.now().time() < dt.time(10)):
                     action_list.append(orders['taverna'])
 
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
@@ -344,17 +355,16 @@ def parse_text(text, username, message_id):
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
-                # Добавил задержку рандомную
-                sleep_time = random.randint(3, 10)
+                sleep_time = random.randint(2, 7)
                 sleep(sleep_time)
                 action_list.append(attack_chosen)
-                sleep_time = random.randint(3, 10)
+                sleep_time = random.randint(2, 7)
                 sleep(sleep_time)
                 action_list.append(cover_chosen)
 
             elif text.find('Содержимое склада') != -1:
                 if castle_name == 'blue':
-                    fwd(stock_bot, message_id)
+                fwd(stock_bot, message_id)
 
             # Здесь нужно все прописать на что не реагировать   
             #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
@@ -391,11 +401,12 @@ def parse_text(text, username, message_id):
             fwd(bot_username, message_id)
 
     elif username == bot_report:
-        #elif username == bot_report and admin_username == 'colobot13':
-        #if text.find('По итогам сражений') != -1 and castle_name == 'blue':
+        if text.find('По итогам сражений') != -1 and castle_name == 'blue':
         fwd(oyster_bot, message_id)
+
     #elif username == stock_bot:
     #    fwd(admin_username, message_id)
+
     else:
         if bot_enabled and order_enabled and username in order_usernames:
             if text.find(orders['red']) != -1:
@@ -414,8 +425,7 @@ def parse_text(text, username, message_id):
                 update_order(orders['gorni_fort'])
             elif text.find('🛡') != -1:
                 update_order(castle)
-
-                # send_msg(admin_username, 'Получили команду ' + current_order['order'] + ' от ' + username)
+            send_msg(admin_username, 'Получили команду ' + current_order['order'] + ' от ' + username)
 
         if username == admin_username:
             if text == '#help':
@@ -605,7 +615,6 @@ def send_msg(to, message):
 
 
 def fwd(to, message_id):
-    sender.mark_read('@' + to)
     sender.fwd('@' + to, message_id)
 
 
