@@ -140,7 +140,7 @@ def work_with_message(receiver):
     while True:
         msg = (yield)
         try:
-            if dt.datetime.now().time() >= dt.time(12,30) and dt.datetime.now().time() < dt.time(12,40) and testttt:
+            if dt.datetime.now().time() >= dt.time(12,30) and dt.datetime.now().time() < dt.time(13,40) and testttt:
                 log('Тест времени пройден')
                 testttt = False
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
