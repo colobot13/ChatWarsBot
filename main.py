@@ -136,13 +136,9 @@ grabit_enabled = False
 
 @coroutine
 def work_with_message(receiver):
-    testttt = True
     while True:
         msg = (yield)
         try:
-            if dt.datetime.now().time() >= dt.time(12,30) and dt.datetime.now().time() < dt.time(13,40) and testttt:
-                log('Тест времени пройден')
-                testttt = False
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
@@ -163,10 +159,11 @@ def queue_worker():
     try:
         send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
     except Exception as err:
-        log('Ошибка отправки Привет Командир')    
+        log('Ошибка отправки Привет Командир')
+
+    # Глобальный цикл работы программы
     while True:
         try:
-
             if time() - lt_info > get_info_diff:
                 lt_info = time()
                 get_info_diff = random.randint(550, 650)
@@ -407,9 +404,12 @@ def parse_text(text, username, message_id):
     # Если пришло уведомление о арене
     elif username == stock_bot:
         if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
-            # За 20 до битвы никаких арен
-            sleep(1)
-            fwd(bot_username, message_id)
+            # За 20 минут до битвы никаких арен
+            if time_for_battle(dt.datetime.now().time()):
+                log('Скоро битва, не время для арены')
+            else:
+                sleep(1)
+                fwd(bot_username, message_id)
 
     elif username == bot_report:
         if text.find('По итогам сражений') != -1 and castle_name == 'blue':
@@ -628,6 +628,16 @@ def send_msg(to, message):
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
+def time_for_battle(tektime):
+    battletime = False
+    if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
+            (tektime > dt.time(3, 40) and tektime < dt.time(4, 5)) or \
+            (tektime > dt.time(7, 40) and tektime < dt.time(8, 5)) or \
+            (tektime > dt.time(12, 40) and tektime < dt.time(12, 5)) or \
+            (tektime > dt.time(15, 40) and tektime < dt.time(16, 5)) or \
+            (tektime > dt.time(17, 40) and tektime < dt.time(18, 5)):
+        battletime = True
+    return True
 
 def update_order(order):
     current_order['order'] = order
