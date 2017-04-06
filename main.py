@@ -108,16 +108,16 @@ states_map = {
 
 arena_cover = ['🛡головы', '🛡корпуса', '🛡ног']
 arena_attack = ['🗡в голову', '🗡по корпусу', '🗡по ногам']
-# поменять blue на red, black, white, yellow в зависимости от вашего замка
+# поменять blue на red, black, white, yellow
 castle = orders[castle_name]
-# текущий приказ на атаку/защиту, по умолчанию всегда защита, трогать не нужно
+# текущий приказ на атаку/защиту, по умолчанию всегда защита
 current_order = {'time': 0, 'order': castle}
 
 sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=port)
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
-get_info_diff = 360
+get_info_diff = 600
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -133,11 +133,16 @@ donate_enabled = False
 grabit_enabled = False
 
 
+
 @coroutine
 def work_with_message(receiver):
+    testttt = True
     while True:
         msg = (yield)
         try:
+            if dt.datetime.now().time() >= dt.time(12,30) and dt.datetime.now().time() < dt.time(12,40) and testttt:
+                log('Тест времени пройден')
+                testttt = False
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
@@ -164,7 +169,7 @@ def queue_worker():
 
             if time() - lt_info > get_info_diff:
                 lt_info = time()
-                get_info_diff = random.randint(400, 800)
+                get_info_diff = random.randint(550, 650)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
                 continue
@@ -369,7 +374,7 @@ def parse_text(text, username, message_id):
 
             elif text.find('Содержимое склада') != -1:
                 if castle_name == 'blue':
-                fwd(stock_bot, message_id)
+                    fwd(stock_bot, message_id)
 
             # Здесь нужно все прописать на что не реагировать   
             #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
@@ -402,12 +407,13 @@ def parse_text(text, username, message_id):
     # Если пришло уведомление о арене
     elif username == stock_bot:
         if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
+            # За 20 до битвы никаких арен
             sleep(1)
             fwd(bot_username, message_id)
 
     elif username == bot_report:
         if text.find('По итогам сражений') != -1 and castle_name == 'blue':
-        fwd(oyster_bot, message_id)
+            fwd(oyster_bot, message_id)
 
     #elif username == stock_bot:
     #    fwd(admin_username, message_id)
