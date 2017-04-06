@@ -198,8 +198,8 @@ def parse_text(text, username, message_id):
     if username == bot_username:
         log('Получили сообщение от бота. Проверяем условия')
         
-        if time_to_battle(dt.datetime.now().time()):
-            log('Скоро битва, не время для арены')
+        #if time_to_battle(dt.datetime.now().time()):
+        #   log('Скоро битва, не время для арены')
 
         if "На выходе из замка охрана никого не пропускает" in text:
             with open('captcha.txt', 'a+') as f:
@@ -633,12 +633,12 @@ def fwd(to, message_id):
 
 def time_to_battle(tektime):
     battletime = False
-    if (tektime > dt.time(22, 40) and tektime < dt.time(0, 5)) or \
+    if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
             (tektime > dt.time(3, 40) and tektime < dt.time(4, 5)) or \
             (tektime > dt.time(7, 40) and tektime < dt.time(8, 5)) or \
-            (tektime > dt.time(12, 40) and tektime < dt.time(12, 5)) or \
+            (tektime > dt.time(11, 40) and tektime < dt.time(12, 5)) or \
             (tektime > dt.time(15, 40) and tektime < dt.time(16, 5)) or \
-            (tektime > dt.time(17, 40) and tektime < dt.time(18, 5)):
+            (tektime > dt.time(19, 40) and tektime < dt.time(20, 5)):
         battletime = True
     return True
 
