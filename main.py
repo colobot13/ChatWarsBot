@@ -164,8 +164,6 @@ def queue_worker():
     # Глобальный цикл работы программы
     while True:
         try:
-            if time_to_battle(dt.datetime.now().time()):
-                log('Скоро битва, не время для арены')
             if time() - lt_info > get_info_diff:
                 lt_info = time()
                 get_info_diff = random.randint(550, 650)
@@ -199,6 +197,9 @@ def parse_text(text, username, message_id):
     global grabit_enabled
     if username == bot_username:
         log('Получили сообщение от бота. Проверяем условия')
+        
+        if time_to_battle(dt.datetime.now().time()):
+            log('Скоро битва, не время для арены')
 
         if "На выходе из замка охрана никого не пропускает" in text:
             with open('captcha.txt', 'a+') as f:
