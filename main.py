@@ -164,6 +164,8 @@ def queue_worker():
     # Глобальный цикл работы программы
     while True:
         try:
+            if time_to_battle(dt.datetime.now().time()):
+                log('Скоро битва, не время для арены')
             if time() - lt_info > get_info_diff:
                 lt_info = time()
                 get_info_diff = random.randint(550, 650)
@@ -405,7 +407,7 @@ def parse_text(text, username, message_id):
     elif username == stock_bot:
         if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
             # За 20 минут до битвы никаких арен
-            if time_for_battle(dt.datetime.now().time()):
+            if time_to_battle(dt.datetime.now().time()):
                 log('Скоро битва, не время для арены')
             else:
                 sleep(1)
@@ -628,9 +630,9 @@ def send_msg(to, message):
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
-def time_for_battle(tektime):
+def time_to_battle(tektime):
     battletime = False
-    if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
+    if (tektime > dt.time(22, 40) and tektime < dt.time(0, 5)) or \
             (tektime > dt.time(3, 40) and tektime < dt.time(4, 5)) or \
             (tektime > dt.time(7, 40) and tektime < dt.time(8, 5)) or \
             (tektime > dt.time(12, 40) and tektime < dt.time(12, 5)) or \
