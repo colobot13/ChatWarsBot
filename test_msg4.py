@@ -164,6 +164,8 @@ def queue_worker():
         send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
     except Exception as err:
         log('Ошибка отправки Привет Командир')
+        bot_enabled = False
+        sys.exit()
 
     # Глобальный цикл работы программы
     while True:
@@ -637,9 +639,9 @@ def time_for_battle(tektime):
     if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
             (tektime > dt.time(3, 40) and tektime < dt.time(4, 5)) or \
             (tektime > dt.time(7, 40) and tektime < dt.time(8, 5)) or \
-            (tektime > dt.time(12, 40) and tektime < dt.time(12, 5)) or \
+            (tektime > dt.time(11, 40) and tektime < dt.time(12, 5)) or \
             (tektime > dt.time(15, 40) and tektime < dt.time(16, 5)) or \
-            (tektime > dt.time(17, 40) and tektime < dt.time(18, 5)):
+            (tektime > dt.time(19, 40) and tektime < dt.time(20, 5)):
         battletime = True
     return True
 
