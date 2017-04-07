@@ -161,6 +161,7 @@ def queue_worker():
     except Exception as err:
         log('Ошибка отправки Привет Командир')
         bot_enabled = False
+        sys.exit()
 
     # Глобальный цикл работы программы
     while True:
