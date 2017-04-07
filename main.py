@@ -160,6 +160,7 @@ def queue_worker():
         send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
     except Exception as err:
         log('Ошибка отправки Привет Командир')
+        bot_enabled = False
 
     # Глобальный цикл работы программы
     while True:
@@ -197,9 +198,6 @@ def parse_text(text, username, message_id):
     global grabit_enabled
     if username == bot_username:
         log('Получили сообщение от бота. Проверяем условия')
-        
-        #if time_to_battle(dt.datetime.now().time()):
-        #   log('Скоро битва, не время для арены')
 
         if "На выходе из замка охрана никого не пропускает" in text:
             with open('captcha.txt', 'a+') as f:
@@ -408,7 +406,7 @@ def parse_text(text, username, message_id):
     elif username == stock_bot:
         if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
             # За 20 минут до битвы никаких арен
-            if time_to_battle(dt.datetime.now().time()):
+            if time_for_battle(dt.datetime.now().time()):
                 log('Скоро битва, не время для арены')
             else:
                 sleep(1)
@@ -631,7 +629,7 @@ def send_msg(to, message):
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
-def time_to_battle(tektime):
+def time_for_battle(tektime):
     battletime = False
     if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
             (tektime > dt.time(3, 40) and tektime < dt.time(4, 5)) or \
