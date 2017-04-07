@@ -408,6 +408,7 @@ def parse_text(text, username, message_id):
             # За 20 минут до битвы никаких арен
             if time_for_battle(dt.datetime.now().time()):
                 log('Скоро битва, не время для арены')
+                lt_arena = time() - 3600
             else:
                 sleep(1)
                 fwd(bot_username, message_id)
