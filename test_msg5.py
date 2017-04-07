@@ -164,7 +164,6 @@ def queue_worker():
         send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
     except Exception as err:
         log('Ошибка отправки Привет Командир')
-        bot_enabled = False
         sys.exit()
 
     # Глобальный цикл работы программы
