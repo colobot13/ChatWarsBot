@@ -141,7 +141,7 @@ def work_with_message(receiver):
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 log(msg['text'])
-                log(msg['sender'])
+                log(msg['sender']['username'])
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
             log('Ошибка coroutine: {0}'.format(err))
