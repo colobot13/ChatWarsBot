@@ -298,7 +298,8 @@ def parse_text(text, username, message_id):
                 log('Времени достаточно')
                 gold = int(re.search('💰([0-9]+)', text).group(1))
                 endurance = int(re.search('Выносливость: ([0-9]+)', text).group(1))
-                log('Золото: {0}, выносливость: {1}'.format(gold, endurance))
+                uroven = int(re.search('Уровень: ([0-9]+)', text).group(1))
+                log('Уровень: {0}, Золото: {1}, выносливость: {2}'.format(uroven, gold, endurance))
 
                 #    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
                 #    defence = int(re.search('Защита: ([0-9]+)', text).group(1))
@@ -317,24 +318,23 @@ def parse_text(text, username, message_id):
                     action_list.append('+1 🛡Защита')
 
                 elif text.find('Определись со специализацией. Жми /class') != -1 and '/class' not in action_list:
-                    Uroven = int(re.search('Уровень: ([0-9]+)', msg['text']).group(1))
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append('/class')
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
-                    if Uroven >= 5 and Uroven <= 9:
+                    if uroven >= 5 and uroven <= 9:
                         log('/class 🛠 Мастер 📦')
                         action_list.append('🛠 Мастер 📦')
-                    if Uroven >= 10 and Uroven <= 14:
+                    if uroven >= 10 and uroven <= 14:
                         log('/class 📚 Обучение')
                         action_list.append('📚 Обучение')
-                    if Uroven > 14:
+                    if uroven > 14:
                         log('15 Уровень Нужно выбрать специализацию')
                         send_msg(admin_username, '15 Уровень Нужно выбрать специализацию')
-                
+
                 # Грабить корованы
-                elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
+                if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
@@ -356,9 +356,7 @@ def parse_text(text, username, message_id):
 
                 # Ходить на арену
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
-                    Uroven = int(re.search('Уровень: ([0-9]+)', hero_message_id).group(1))
-                    log(str(Uroven))
-                    if gold >= 5 and Uroven >= 5:
+                    if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                         action_list.append(orders['zamok'])
