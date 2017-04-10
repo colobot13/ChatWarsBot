@@ -272,7 +272,7 @@ def parse_text(text, username, message_id):
                     fwd(oyster_bot, message_id)
 
             # Если битва во вот начнется то пока ничего не далаем
-            # Здесь нудно добавить проверку на установку дефа или атаку
+            # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
                 lt_info = time()
                 return
@@ -419,6 +419,8 @@ def parse_text(text, username, message_id):
     #    if text.find('По итогам сражений') != -1 and castle_name == 'blue':
     #        fwd(oyster_bot, message_id)
 
+    #elif username == stock_bot:
+    #    fwd(admin_username, message_id)
 
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
@@ -661,7 +663,7 @@ def log(text):
 
 if __name__ == '__main__':
     receiver = Receiver(sock=socket_path) if socket_path else Receiver(port=port)
-    receiver.start()  # start the Connector.
+    receiver.start()
     _thread.start_new_thread(queue_worker, ())
     receiver.message(work_with_message(receiver))
     receiver.stop()
