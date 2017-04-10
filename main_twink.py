@@ -122,7 +122,7 @@ hero_message_id = 0
 last_captcha_id = 0
 
 bot_enabled = True
-arena_enabled = False
+arena_enabled = True
 taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
@@ -346,7 +346,8 @@ def parse_text(text, username, message_id):
 
                 # Ходить на арену
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
-                    if gold >= 5:
+                    Uroven = int(re.search('Уровень: ([0-9]+)', msg['text']).group(1))
+                    if gold >= 5 and Uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                         action_list.append(orders['zamok'])
