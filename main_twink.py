@@ -274,6 +274,7 @@ def parse_text(text, username, message_id):
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
+                lt_info = time()
                 return
 
             elif text.find('Битва пяти замков через') != -1:
@@ -407,6 +408,8 @@ def parse_text(text, username, message_id):
             bot_enabled = True
             
     # Если пришло уведомление о арене
+
+    # Пока отключу
     #elif username == stock_bot:
     #    if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
     #        # За 20 минут до битвы никаких арен
@@ -425,7 +428,8 @@ def parse_text(text, username, message_id):
     #    fwd(admin_username, message_id)
 
     else:
-        if bot_enabled and order_enabled and username in order_usernames:
+        if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
+                not text.find('Топы отряда') != -1 and len(text) <= 200:
             if text.find(orders['red']) != -1:
                 update_order(orders['red'])
             elif text.find(orders['black']) != -1:
@@ -634,6 +638,7 @@ def send_msg(to, message):
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
+# Не верно работает
 def time_for_battle(tektime):
     battletime = False
     if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
