@@ -316,7 +316,7 @@ def parse_text(text, username, message_id):
                     log('level_up')
                     action_list.append('+1 🛡Защита')
 
-                if text.find('Определись со специализацией. Жми /class') != -1 and '/class' not in action_list:
+                elif text.find('Определись со специализацией. Жми /class') != -1 and '/class' not in action_list:
                     Uroven = int(re.search('Уровень: ([0-9]+)', msg['text']).group(1))
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
@@ -332,17 +332,16 @@ def parse_text(text, username, message_id):
                     if Uroven > 14:
                         log('15 Уровень Нужно выбрать специализацию')
                         send_msg(admin_username, '15 Уровень Нужно выбрать специализацию')
-
                 
                 # Грабить корованы
-                if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
+                elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['grabit'])
                 
                 # Ходить в пещеру
-                if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
+                elif peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
