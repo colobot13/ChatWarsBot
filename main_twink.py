@@ -332,13 +332,8 @@ def parse_text(text, username, message_id):
 
                 # Ходить на арену
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    action_list.append('/top')
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
                     if gold >= 5:
-		        randint(1, 2)
+		        sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                         action_list.append(orders['zamok'])
                         sleep_time = random.randint(1, 2)
