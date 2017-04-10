@@ -357,7 +357,7 @@ def parse_text(text, username, message_id):
 
                 # Ходить на арену
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
-                    Uroven = int(re.search('Уровень: ([0-9]+)', msg['text']).group(1))
+                    Uroven = int(re.search('Уровень: ([0-9]+)', hero_message_id).group(1))
                     if gold >= 5 and Uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
