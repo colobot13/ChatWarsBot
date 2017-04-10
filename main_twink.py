@@ -241,32 +241,32 @@ def parse_text(text, username, message_id):
                 action_list.append(orders['hero'])
 
             # Оправим репорт если это сообщение о итоге битвы на арене   
-            elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:  
-                lt_arena = time()
-                if castle_name == 'blue':
-                    fwd(stock_bot, message_id)
-                    if text.find('Поздравляем!') != -1:
-                        fwd(oyster_bot, message_id)
-                action_list.append(orders['hero'])
-                lt_info = time()        
+            #elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:  
+            #    lt_arena = time()
+            #    if castle_name == 'blue':
+            #        fwd(stock_bot, message_id)
+            #        if text.find('Поздравляем!') != -1:
+            #            fwd(oyster_bot, message_id)
+            #    action_list.append(orders['hero'])
+            #    lt_info = time()        
                         
             # Оправим репорт если это сообщение о донате  
-            elif text.find('Рейтинг меценатов') != -1:  
-                if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)   
+            #elif text.find('Рейтинг меценатов') != -1:  
+            #    if castle_name == 'blue':
+            #        fwd(oyster_bot, message_id)   
 
             # Оправим результаты боя в ойстер
-            elif text.find('Твои результаты в бою:') != -1:  
-                if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)
+            #elif text.find('Твои результаты в бою:') != -1:  
+            #    if castle_name == 'blue':
+            #        fwd(oyster_bot, message_id)
                     
             # Оправим Топ игроков
-            elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
-                if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)
+            #elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
+            #    if castle_name == 'blue':
+            #        fwd(oyster_bot, message_id)
 
             # Если битва во вот начнется то пока ничего не далаем
-            # Здесь нудно добавить проверку на установку дефа или атаку
+            # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
                 return
 
@@ -303,6 +303,11 @@ def parse_text(text, username, message_id):
                 #    else:
                 #        action_list.append('+1 🛡Защита')
 
+
+                #          /class
+                #          🛠 Мастер 📦
+                # Определись со специализацией. Жми /class
+
                 
                 # Грабить корованы
                 if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
@@ -332,27 +337,16 @@ def parse_text(text, username, message_id):
                     action_list.append('/top')
                     sleep_time = random.randint(1, 2)
                     sleep(sleep_time)
-                    if gold >= 30:
-                        action_list.append('/donate {0}'.format(1))
+                    if gold >= 5:
+		        randint(1, 2)
+                        sleep(sleep_time)
+                        action_list.append(orders['zamok'])
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                    elif gold < 5:
-                        action_list.append('/s_101')
+                        action_list.append(orders['arena'])
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                        action_list.append('/s_101')
-                        sleep_time = random.randint(1, 2)
-                        sleep(sleep_time)
-                        action_list.append('/s_101')
-                        sleep_time = random.randint(1, 2)
-                        sleep(sleep_time)
-                    action_list.append(orders['zamok'])
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    action_list.append(orders['arena'])
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    action_list.append('🔎Поиск соперника')
+                        action_list.append('🔎Поиск соперника')
 
                 # Ходить в таверну
                 elif taverna_enabled and gold >= 20 and orders['taverna'] not in action_list and \
@@ -402,6 +396,9 @@ def parse_text(text, username, message_id):
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
+
+    elif username == "Telegram":
+            fwd(admin_username, message_id)
             
     # Если пришло уведомление о арене
     #elif username == stock_bot:
