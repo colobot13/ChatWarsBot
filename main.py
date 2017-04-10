@@ -138,6 +138,7 @@ grabit_enabled = False
 def work_with_message(receiver):
     while True:
         msg = (yield)
+        print('Full dump: {array}'.format(array=str(msg)))
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
@@ -248,7 +249,12 @@ def parse_text(text, username, message_id):
                     if text.find('Поздравляем!') != -1:
                         fwd(oyster_bot, message_id)
                 action_list.append(orders['hero'])
-                lt_info = time()        
+                lt_info = time()
+                sleep_time = random.randint(1, 2)
+                sleep(sleep_time)
+                action_list.append('/top')
+
+                
                         
             # Оправим репорт если это сообщение о донате  
             elif text.find('Рейтинг меценатов') != -1:  
@@ -268,6 +274,7 @@ def parse_text(text, username, message_id):
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нудно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
+                lt_info = time()
                 return
 
             elif text.find('Битва пяти замков через') != -1:
@@ -328,23 +335,16 @@ def parse_text(text, username, message_id):
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
                     sleep_time = random.randint(1, 2)
                     sleep(sleep_time)
-                    action_list.append('/top')
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
                     if gold >= 30:
                         action_list.append('/donate {0}'.format(1))
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                     elif gold < 5:
-                        action_list.append('/s_111')
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                        #action_list.append('/s_101')
-                        #sleep_time = random.randint(1, 2)
-                        #sleep(sleep_time)
-                        #action_list.append('/s_101')
-                        #sleep_time = random.randint(1, 2)
-                        #sleep(sleep_time)
+                        action_list.append('/s_111')
+                    sleep_time = random.randint(1, 2)
+                    sleep(sleep_time)
                     action_list.append(orders['zamok'])
                     sleep_time = random.randint(1, 2)
                     sleep(sleep_time)
@@ -403,22 +403,22 @@ def parse_text(text, username, message_id):
             bot_enabled = True
             
     # Если пришло уведомление о арене
-    elif username == stock_bot:
-        if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
-            # За 20 минут до битвы никаких арен
-            if time_for_battle(dt.datetime.now().time()):
-                log('Скоро битва, не время для арены')
-                lt_arena = time() - 3600
-            else:
-                sleep(1)
-                fwd(bot_username, message_id)
 
-    elif username == bot_report:
-        if text.find('По итогам сражений') != -1 and castle_name == 'blue':
-            fwd(oyster_bot, message_id)
-
+    # Пока отключу
     #elif username == stock_bot:
-    #    fwd(admin_username, message_id)
+    #    if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
+    #        # За 20 минут до битвы никаких арен
+    #        if time_for_battle(dt.datetime.now().time()):
+    #            log('Скоро битва, не время для арены')
+    #            lt_arena = time() - 3600
+    #        else:
+    #            sleep(1)
+    #            fwd(bot_username, message_id)
+
+    #elif username == bot_report:
+    #    if text.find('По итогам сражений') != -1 and castle_name == 'blue':
+    #        fwd(oyster_bot, message_id)
+
 
     else:
         if bot_enabled and order_enabled and username in order_usernames:
@@ -630,6 +630,7 @@ def send_msg(to, message):
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
+# Не верно работает
 def time_for_battle(tektime):
     battletime = False
     if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
