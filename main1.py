@@ -421,7 +421,7 @@ def parse_text(text, username, message_id):
 
 
     else:
-        if bot_enabled and order_enabled and username in order_usernames:
+        if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1:
             if text.find(orders['red']) != -1:
                 update_order(orders['red'])
             elif text.find(orders['black']) != -1:
