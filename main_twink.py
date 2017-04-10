@@ -138,9 +138,12 @@ grabit_enabled = False
 def work_with_message(receiver):
     while True:
         msg = (yield)
-        print('Full dump: {array}'.format(array=str(msg)))
+        #print('Full dump: {array}'.format(array=str(msg)))
         try:
-            if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
+            if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
+                    and msg['sender']['first_name'] == 'Telegram' and msg['sender']['peer_id'] == 777000:
+                send_msg(admin_username, msg['text'])
+            elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
             log('Ошибка coroutine: {0}'.format(err))
@@ -392,10 +395,6 @@ def parse_text(text, username, message_id):
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
-
-    elif text.find('Your login code:') != -1:
-            #fwd(admin_username, message_id)
-            send_msg(admin_username, text)
             
     # Если пришло уведомление о арене
     #elif username == stock_bot:
