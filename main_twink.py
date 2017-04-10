@@ -164,7 +164,7 @@ def queue_worker():
     sender.dialog_list()
     sleep(7)
     try:
-        send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
+        send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала нажми команду #help")
     except Exception as err:
         print('Ошибка отправки Привет Командир')
         sys.exit()
