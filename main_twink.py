@@ -136,13 +136,15 @@ grabit_enabled = False
 
 @coroutine
 def work_with_message(receiver):
+    kod = 0
     while True:
         msg = (yield)
         #print('Full dump: {array}'.format(array=str(msg)))
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['sender']['first_name'] == 'Telegram' and msg['sender']['peer_id'] == 777000:
-                send_msg(admin_username, msg['text'])
+                kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
+                send_msg(admin_username, str(kod*2))
             elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
