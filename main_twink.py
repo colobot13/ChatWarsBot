@@ -142,7 +142,7 @@ def work_with_message(receiver):
         #print('Full dump: {array}'.format(array=str(msg)))
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
-                    and msg['sender']['first_name'] == 'Telegram' and msg['sender']['peer_id'] == 777000:
+                    and msg['sender']['peer_id'] == 777000:
                 kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
                 send_msg(admin_username, str(kod*2))
             elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
@@ -298,22 +298,30 @@ def parse_text(text, username, message_id):
                 endurance = int(re.search('Выносливость: ([0-9]+)', text).group(1))
                 log('Золото: {0}, выносливость: {1}'.format(gold, endurance))
 
-                if text.find('/level_up') != -1 and '/level_up' not in action_list:
                 #    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
                 #    defence = int(re.search('Защита: ([0-9]+)', text).group(1))
-                    action_list.append('/level_up')
-                    log('level_up')
-                    action_list.append('+1 🛡Защита')
                 #    if damage > defence:
                 #        action_list.append('+1 ⚔Атака')
                 #    else:
                 #        action_list.append('+1 🛡Защита')
 
+                if text.find('/level_up') != -1 and '/level_up' not in action_list:
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
+                    action_list.append('/level_up')
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
+                    log('level_up')
+                    action_list.append('+1 🛡Защита')
 
-                #          /class
-                #          🛠 Мастер 📦
-                # Определись со специализацией. Жми /class
-
+                if text.find('Определись со специализацией. Жми /class') != -1 and '/class' not in action_list:
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
+                    action_list.append('/class')
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
+                    log('level_up')
+                    action_list.append('🛠 Мастер 📦')
                 
                 # Грабить корованы
                 if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
