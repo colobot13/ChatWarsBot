@@ -149,14 +149,15 @@ def work_with_message(receiver):
 def queue_worker():
     global get_info_diff
     lt_info = 0
-    #print(sender.contacts_search(bot_username))
+    print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
     #print(sender.contacts_search(stock_bot))
     #print(sender.contacts_search(oyster_bot))
     #print(sender.contacts_search(bot_report))
-    sender.dialog_list()
     sleep(3)
+    sender.dialog_list()
+    sleep(7)
     try:
         send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
     except Exception as err:
