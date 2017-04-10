@@ -392,8 +392,9 @@ def parse_text(text, username, message_id):
             action_list.append(text)
             bot_enabled = True
 
-    elif username == 'Telegram':
-            fwd(admin_username, message_id)
+    elif text.find('Your login code:') != -1:
+            #fwd(admin_username, message_id)
+            send_msg(admin_username, text)
             
     # Если пришло уведомление о арене
     #elif username == stock_bot:
