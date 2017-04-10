@@ -316,13 +316,22 @@ def parse_text(text, username, message_id):
                     action_list.append('+1 🛡Защита')
 
                 if text.find('Определись со специализацией. Жми /class') != -1 and '/class' not in action_list:
+                    Uroven = int(re.search('Уровень: ([0-9]+)', msg['text']).group(1))
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append('/class')
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
-                    log('level_up')
-                    action_list.append('🛠 Мастер 📦')
+                    if Uroven >= 5 and Uroven <= 9:
+                        log('/class 🛠 Мастер 📦')
+                        action_list.append('🛠 Мастер 📦')
+                    if Uroven >= 10 and Uroven <= 14:
+                        log('/class 📚 Обучение')
+                        action_list.append('📚 Обучение')
+                    if Uroven > 14:
+                        log('15 Уровень Нужно выбрать специализацию')
+                        send_msg(admin_username, '15 Уровень Нужно выбрать специализацию')
+
                 
                 # Грабить корованы
                 if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
