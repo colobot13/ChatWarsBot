@@ -259,7 +259,6 @@ def parse_text(text, username, message_id):
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
-                log('Тест определения замка: Замок {0} Имя {1}'.format(castle,castle_name))
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
