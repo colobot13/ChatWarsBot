@@ -117,6 +117,7 @@ sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=por
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
+arena_closed = False
 get_info_diff = 600
 hero_message_id = 0
 last_captcha_id = 0
@@ -173,6 +174,9 @@ def queue_worker():
     while True:
         try:
             if time() - lt_info > get_info_diff:
+                if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
+                                dt.datetime.now().time() <= dt.time(13, 20):
+                    arena_closed = False
                 lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
@@ -187,9 +191,9 @@ def queue_worker():
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
 
-
 def parse_text(text, username, message_id):
     global lt_arena
+    global arena_closed
     global lt_info
     global hero_message_id
     global bot_enabled
@@ -245,7 +249,7 @@ def parse_text(text, username, message_id):
                 action_list.append(orders['corovan'])
 
             elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1:
-                lt_arena = time()
+                arena_closed = True
                 lt_info = time()
                 action_list.append(orders['hero'])
 
@@ -336,8 +340,9 @@ def parse_text(text, username, message_id):
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
-                # Ходить на арену
-                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
+                # Ходить на арену каждые 30 мин  (пока постявлю 5 мин для теста)
+                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 300 \
+                        and not arena_closed:
                     if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
@@ -355,7 +360,7 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['taverna'])
 
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
-                #lt_arena = time()
+                lt_arena = time()
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
@@ -369,51 +374,10 @@ def parse_text(text, username, message_id):
             elif text.find('Содержимое склада') != -1:
                 fwd(admin_username, message_id)
 
-            # Оправим репорт если это сообщение о итоге битвы на арене
-            # elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
-            #    lt_arena = time()
-            #    if castle_name == 'blue':
-            #        fwd(stock_bot, message_id)
-            #        if text.find('Поздравляем!') != -1:
-            #            fwd(oyster_bot, message_id)
-            #    action_list.append(orders['hero'])
-            #    lt_info = time()
-
-            # Оправим репорт если это сообщение о донате
-            # elif text.find('Рейтинг меценатов') != -1:
-            #    if castle_name == 'blue':
-            #        fwd(oyster_bot, message_id)
-
-            # Оправим результаты боя в ойстер
-            # elif text.find('Твои результаты в бою:') != -1:
-            #    if castle_name == 'blue':
-            #        fwd(oyster_bot, message_id)
-
-            # Оправим Топ игроков
-            # elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:
-            #    if castle_name == 'blue':
-            #        fwd(oyster_bot, message_id)
-
-            # Здесь нужно все прописать на что не реагировать   
-            #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
-            #                "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
-            #                "Соперник найден" not in text and "Синий замок" not in text and \
-            #                "Синего замка" not in text and "Общение внутри замка" not in text and \
-            #                "Победил воин" not in text and "shop" not in text and \
-            #                not re.findall(r'\bнанес\b(.*)\bудар\b', text):
-                                
-                # Пока уберу                
-                #with open('taverna.txt', 'a+') as f:
-                #    f.seek(0)
-                #    for line in f:
-                #        if text[0:8] in line:
-                #            break
-                #    else:
-                #        f.write(text + '\n')
-                
-                # Уберу пока режим полуавтоматический
-                #action_list.append(orders['hero'])
-                #lt_info = time()
+            elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
+                lt_arena = time()
+                action_list.append(orders['hero'])
+                lt_info = time()
 
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
@@ -422,26 +386,6 @@ def parse_text(text, username, message_id):
             action_list.append(text)
             bot_enabled = True
             
-    # Если пришло уведомление о арене
-
-    # Пока отключу
-    #elif username == stock_bot:
-    #    if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
-    #        # За 20 минут до битвы никаких арен
-    #        if time_for_battle(dt.datetime.now().time()):
-    #            log('Скоро битва, не время для арены')
-    #            lt_arena = time() - 3600
-    #        else:
-    #            sleep(1)
-    #            fwd(bot_username, message_id)
-
-    #elif username == bot_report:
-    #    if text.find('По итогам сражений') != -1 and castle_name == 'blue':
-    #        fwd(oyster_bot, message_id)
-
-    #elif username == stock_bot:
-    #    fwd(admin_username, message_id)
-
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
                 not text.find('Топы отряда') != -1 and len(text) <= 200:
@@ -663,6 +607,12 @@ def time_for_battle(tektime):
             (dt.time(19, 40) <= tektime <= dt.time(20, 5)):
         battletime = True
     return battletime
+
+def time_for_arena(tektime):
+    arenatime = False
+    if tektime >= dt.time(13, 1) or tektime <= dt.time(3, 20):
+        arenatime = True
+    return arenatime
 
 def hero_castle(heroinf):
     if heroinf.find(orders['blue']) != -1:
