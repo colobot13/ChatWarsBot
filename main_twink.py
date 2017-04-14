@@ -191,6 +191,7 @@ def queue_worker():
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
 
+
 def parse_text(text, username, message_id):
     global lt_arena
     global arena_closed
@@ -213,14 +214,6 @@ def parse_text(text, username, message_id):
         log('Получили сообщение от бота. Проверяем условия')
 
         if "На выходе из замка охрана никого не пропускает" in text:
-            with open('captcha.txt', 'a+') as f:
-                f.seek(0)
-                for line in f:
-                    if text in line:
-                        break
-                else:
-                    f.write(text + '\n' + '-' * 8 + '\n')
-
             action_list.clear()
             send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
             fwd(admin_username, message_id)
@@ -317,10 +310,16 @@ def parse_text(text, username, message_id):
                         action_list.append('📚 Обучение')
                     if uroven > 14:
                         log('15 Уровень Нужно выбрать специализацию')
-                        send_msg(admin_username, '15 Уровень Нужно выбрать специализацию')
+                        # Можно сделать кузнеца, но зачем :)
+                        action_list.append('📦 Добытчик')
+                        send_msg(admin_username, '15 Уровень. Теперь я настоящий 📦 Добытчик')
+                    if uroven > 19:
+                        log('20 Уровень Нужно выбрать специализацию')
+                        #action_list.append('📚 Обучение')
+                        send_msg(admin_username, '20 Уровень Нужно выбрать специализацию')
 
                 # Грабить корованы
-                if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
+                elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
@@ -340,8 +339,8 @@ def parse_text(text, username, message_id):
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
-                # Ходить на арену каждые 30 мин  (пока постявлю 5 мин для теста)
-                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 300 \
+                # Ходить на арену каждые 30 мин
+                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 600 \
                         and not arena_closed:
                     if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
