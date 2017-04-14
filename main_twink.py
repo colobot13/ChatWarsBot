@@ -123,7 +123,7 @@ hero_message_id = 0
 last_captcha_id = 0
 
 bot_enabled = True
-arena_enabled = True
+arena_enabled = False
 taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
