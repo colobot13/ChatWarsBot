@@ -38,7 +38,7 @@ socket_path = ''
 host = 'localhost'
 
 # порт по которому слушать
-port = 1338
+port = 1337
 
 opts, args = getopt(sys.argv[1:], 'a:o:c:s:h:p', ['admin=', 'order=', 'castle=', 'socket=', 'host=', 'port='])
 
@@ -117,6 +117,7 @@ sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=por
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
+arena_closed = False
 get_info_diff = 600
 hero_message_id = 0
 last_captcha_id = 0
@@ -159,7 +160,7 @@ def queue_worker():
     sender.dialog_list()
     sleep(7)
     try:
-        send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала начжми команду #help")
+        send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала нажми команду #help")
     except Exception as err:
         print('Ошибка отправки Привет Командир')
         sys.exit()
@@ -168,6 +169,9 @@ def queue_worker():
     while True:
         try:
             if time() - lt_info > get_info_diff:
+                if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
+                                dt.datetime.now().time() <= dt.time(13, 20):
+                    arena_closed = False
                 lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
@@ -177,7 +181,7 @@ def queue_worker():
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
-            sleep_time = random.randint(2, 4)
+            sleep_time = random.randint(2, 5)
             sleep(sleep_time)
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
@@ -185,6 +189,7 @@ def queue_worker():
 
 def parse_text(text, username, message_id):
     global lt_arena
+    global arena_closed
     global lt_info
     global hero_message_id
     global bot_enabled
@@ -198,18 +203,12 @@ def parse_text(text, username, message_id):
     global donate_enabled
     global last_captcha_id
     global grabit_enabled
+    global castle_name
+    global castle
     if username == bot_username:
         log('Получили сообщение от бота. Проверяем условия')
 
         if "На выходе из замка охрана никого не пропускает" in text:
-            with open('captcha.txt', 'a+') as f:
-                f.seek(0)
-                for line in f:
-                    if text in line:
-                        break
-                else:
-                    f.write(text + '\n' + '-' * 8 + '\n')
-
             action_list.clear()
             send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
             fwd(admin_username, message_id)
@@ -237,40 +236,10 @@ def parse_text(text, username, message_id):
             if corovan_enabled and text.find(' /go') != -1:
                 action_list.append(orders['corovan'])
 
-            elif text.find('Сражаться можно не чаще чем один раз в час.') != -1:
-                lt_arena = time()
+            elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1:
+                arena_closed = True
                 lt_info = time()
                 action_list.append(orders['hero'])
-
-            # Оправим репорт если это сообщение о итоге битвы на арене   
-            elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:  
-                lt_arena = time()
-                if castle_name == 'blue':
-                    fwd(stock_bot, message_id)
-                    if text.find('Поздравляем!') != -1:
-                        fwd(oyster_bot, message_id)
-                action_list.append(orders['hero'])
-                lt_info = time()
-                sleep_time = random.randint(1, 2)
-                sleep(sleep_time)
-                action_list.append('/top')
-
-                
-                        
-            # Оправим репорт если это сообщение о донате  
-            elif text.find('Рейтинг меценатов') != -1:  
-                if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)   
-
-            # Оправим результаты боя в ойстер
-            elif text.find('Твои результаты в бою:') != -1:  
-                if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)
-                    
-            # Оправим Топ игроков
-            elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
-                if castle_name == 'blue':
-                    fwd(oyster_bot, message_id)
 
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
@@ -280,6 +249,8 @@ def parse_text(text, username, message_id):
 
             elif text.find('Битва пяти замков через') != -1:
                 hero_message_id = message_id
+                castle_name = hero_castle(text)
+                castle = orders[castle_name]
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
@@ -298,7 +269,8 @@ def parse_text(text, username, message_id):
                 log('Времени достаточно')
                 gold = int(re.search('💰([0-9]+)', text).group(1))
                 endurance = int(re.search('Выносливость: ([0-9]+)', text).group(1))
-                log('Золото: {0}, выносливость: {1}'.format(gold, endurance))
+                uroven = int(re.search('Уровень: ([0-9]+)', text).group(1))
+                log('Уровень: {0}, Золото: {1}, выносливость: {2}'.format(uroven, gold, endurance))
 
                 #if text.find('/level_up') != -1 and '/level_up' not in action_list:
                 #    damage = int(re.search('Атака: ([0-9]+)', text).group(1))
@@ -319,7 +291,7 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['grabit'])
                 
                 # Ходить в пещеру
-                if peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
+                elif peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
                     action_list.append(orders['kvesty'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
@@ -332,27 +304,19 @@ def parse_text(text, username, message_id):
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
-                # Ходить на арену
-                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 3600:
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    if gold >= 30:
-                        action_list.append('/donate {0}'.format(1))
+                # Ходить на арену каждые 30 мин
+                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 1800 \
+                        and not arena_closed:
+                    if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                    elif gold < 5:
+                        action_list.append(orders['zamok'])
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                        action_list.append('/s_111')
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    action_list.append(orders['zamok'])
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    action_list.append(orders['arena'])
-                    sleep_time = random.randint(1, 2)
-                    sleep(sleep_time)
-                    action_list.append('🔎Поиск соперника')
+                        action_list.append(orders['arena'])
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
+                        action_list.append('🔎Поиск соперника')
 
                 # Ходить в таверну
                 elif taverna_enabled and gold >= 20 and orders['taverna'] not in action_list and \
@@ -360,20 +324,54 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['taverna'])
 
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
-                #lt_arena = time()
+                lt_arena = time()
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
-                sleep_time = random.randint(2, 5)
+                sleep_time = random.randint(2, 7)
                 sleep(sleep_time)
                 action_list.append(attack_chosen)
-                sleep_time = random.randint(2, 5)
+                sleep_time = random.randint(2, 7)
                 sleep(sleep_time)
                 action_list.append(cover_chosen)
 
             elif text.find('Содержимое склада') != -1:
                 if castle_name == 'blue':
                     fwd(stock_bot, message_id)
+
+            elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
+                lt_arena = time()
+                action_list.append(orders['hero'])
+                lt_info = time()
+
+            # Оправим репорт если это сообщение о итоге битвы на арене   
+            elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:  
+                lt_arena = time()
+                if castle_name == 'blue':
+                    fwd(stock_bot, message_id)
+                    if text.find('Поздравляем!') != -1:
+                        fwd(oyster_bot, message_id)
+                action_list.append(orders['hero'])
+                lt_info = time()
+                sleep_time = random.randint(1, 2)
+                sleep(sleep_time)
+                action_list.append('/top')
+                        
+            # Оправим репорт если это сообщение о донате  
+            elif text.find('Рейтинг меценатов') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)   
+
+            # Оправим результаты боя в ойстер
+            elif text.find('Твои результаты в бою:') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
+                    
+            # Оправим Топ игроков
+            elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
+
 
             # Здесь нужно все прописать на что не реагировать   
             #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
@@ -403,26 +401,6 @@ def parse_text(text, username, message_id):
             action_list.append(text)
             bot_enabled = True
             
-    # Если пришло уведомление о арене
-
-    # Пока отключу
-    #elif username == stock_bot:
-    #    if text.find('🔎Поиск соперника') != -1 and castle_name == 'blue':
-    #        # За 20 минут до битвы никаких арен
-    #        if time_for_battle(dt.datetime.now().time()):
-    #            log('Скоро битва, не время для арены')
-    #            lt_arena = time() - 3600
-    #        else:
-    #            sleep(1)
-    #            fwd(bot_username, message_id)
-
-    #elif username == bot_report:
-    #    if text.find('По итогам сражений') != -1 and castle_name == 'blue':
-    #        fwd(oyster_bot, message_id)
-
-    #elif username == stock_bot:
-    #    fwd(admin_username, message_id)
-
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
                 not text.find('Топы отряда') != -1 and len(text) <= 200:
@@ -634,17 +612,34 @@ def send_msg(to, message):
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
-# Не верно работает
 def time_for_battle(tektime):
     battletime = False
-    if (tektime > dt.time(23, 40) and tektime < dt.time(0, 5)) or \
-            (tektime > dt.time(3, 40) and tektime < dt.time(4, 5)) or \
-            (tektime > dt.time(7, 40) and tektime < dt.time(8, 5)) or \
-            (tektime > dt.time(11, 40) and tektime < dt.time(12, 5)) or \
-            (tektime > dt.time(15, 40) and tektime < dt.time(16, 5)) or \
-            (tektime > dt.time(19, 40) and tektime < dt.time(20, 5)):
+    if (dt.time(23, 40) <=  tektime <= dt.time(0, 5)) or \
+            (dt.time(3, 40) <= tektime <= dt.time(4, 5)) or \
+            (dt.time(7, 40) <= tektime <= dt.time(8, 5)) or \
+            (dt.time(11, 40) <=  tektime <= dt.time(12, 5)) or \
+            (dt.time(15, 40) <= tektime <= dt.time(16, 5)) or \
+            (dt.time(19, 40) <= tektime <= dt.time(20, 5)):
         battletime = True
-    return True
+    return battletime
+
+def time_for_arena(tektime):
+    arenatime = False
+    if tektime >= dt.time(13, 1) or tektime <= dt.time(3, 20):
+        arenatime = True
+    return arenatime
+
+def hero_castle(heroinf):
+    if heroinf.find(orders['blue']) != -1:
+        return 'blue'
+    elif heroinf.find(orders['red']) != -1:
+        return 'red'
+    elif heroinf.find(orders['yellow']) != -1:
+        return 'yellow'
+    elif heroinf.find(orders['black']) != -1:
+        return 'black'
+    elif heroinf.find(orders['white']) != -1:
+        return 'white'
 
 def update_order(order):
     current_order['order'] = order
