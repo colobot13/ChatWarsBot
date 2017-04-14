@@ -181,7 +181,7 @@ def queue_worker():
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
-            sleep_time = random.randint(2, 5)
+            sleep_time = random.randint(2, 4)
             sleep(sleep_time)
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
@@ -328,10 +328,10 @@ def parse_text(text, username, message_id):
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
-                sleep_time = random.randint(2, 7)
+                sleep_time = random.randint(2, 5)
                 sleep(sleep_time)
                 action_list.append(attack_chosen)
-                sleep_time = random.randint(2, 7)
+                sleep_time = random.randint(2, 5)
                 sleep(sleep_time)
                 action_list.append(cover_chosen)
 
