@@ -154,6 +154,7 @@ def work_with_message(receiver):
 
 def queue_worker():
     global get_info_diff
+    global arena_closed
     lt_info = 0
     print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
