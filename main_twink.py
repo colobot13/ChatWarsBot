@@ -76,8 +76,10 @@ orders = {
     'kvesty': '🗺 Квесты',
     'zamok': '🏰Замок',
     'arena': '📯Арена',
-    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
-
+    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ',
+    'stock_kraft': '⚒Крафт',
+    'stock_snaraga': '🏷Снаряжение',
+    'stock_other': '🗃Другое'
 }
 
 captcha_answers = {
@@ -123,7 +125,7 @@ hero_message_id = 0
 last_captcha_id = 0
 
 bot_enabled = True
-arena_enabled = False
+arena_enabled = True
 taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
@@ -163,6 +165,11 @@ def queue_worker():
     #print(sender.contacts_search(oyster_bot))
     #print(sender.contacts_search(bot_report))
     sleep(5)
+    if admin_username != '':
+        print(sender.contacts_search(admin_username))
+    if order_usernames != '':
+        for name in order_usernames:
+            print(sender.contacts_search(name))
     sender.dialog_list()
     sleep(5)
     try:
@@ -187,7 +194,7 @@ def queue_worker():
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
-            sleep_time = random.randint(2, 5)
+            sleep_time = random.randint(2, 4)
             sleep(sleep_time)
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
@@ -327,11 +334,17 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['grabit'])
                 
                 # Ходить в пещеру
-                elif peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
+                elif peshera_enabled and endurance >= 2:
                     action_list.append(orders['kvesty'])
-                    sleep_time = random.randint(1, 3)
-                    sleep(sleep_time)
-                    action_list.append(orders['peshera'])
+                    if les_enabled:
+                        action_list.append(random.choice([orders['peshera'], orders['les']]))
+                    else:
+                        action_list.append(orders['peshera'])
+                #elif peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
+                #    action_list.append(orders['kvesty'])
+                #    sleep_time = random.randint(1, 3)
+                #    sleep(sleep_time)
+                #    action_list.append(orders['peshera'])
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
@@ -364,14 +377,18 @@ def parse_text(text, username, message_id):
                 attack_chosen = arena_attack[random.randint(0, 2)]
                 cover_chosen = arena_cover[random.randint(0, 2)]
                 log('Атака: {0}, Защита: {1}'.format(attack_chosen, cover_chosen))
-                sleep_time = random.randint(2, 7)
+                sleep_time = random.randint(2, 5)
                 sleep(sleep_time)
                 action_list.append(attack_chosen)
-                sleep_time = random.randint(2, 7)
+                sleep_time = random.randint(2, 5)
                 sleep(sleep_time)
                 action_list.append(cover_chosen)
 
-            elif text.find('Содержимое склада') != -1:
+
+            elif text.find('Содержимое склада') != -1 and not text.find('На верстаке лежит') != -1:
+                fwd(admin_username, message_id)
+            elif text.find('Снаряжение на складе') != -1 or text.find('Материалы для мастерской') != -1 or \
+                    text.find('Другое:') != -1:
                 fwd(admin_username, message_id)
 
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
@@ -524,20 +541,23 @@ def parse_text(text, username, message_id):
 
             elif text == '#update_stock':
                 action_list.append('/stock')
+                action_list.append(stock_kraft)
+                action_list.append(stock_snaraga)
+                action_list.append(stock_other)
 
             # Получить статус
             elif text == '#status':
                 send_msg(admin_username, '\n'.join([
-                    'Бот включен: {0}',
-                    'Арена включена: {1}',
-                    'Лес включен: {2}',
-                    'Пещера включена: {3}',
-                    'Корованы включены: {4}',
-                    'Приказы включены: {5}',
-                    'Авто деф включен: {6}',
-                    'Донат включен: {7}',
-                    'Таверна включена: {8}',
-                    'Гоп-стоп корованов включен: {9}'
+                    '🤖Бот включен: {0}',
+                    '📯Арена включена: {1}',
+                    '🌲Лес включен: {2}',
+                    '🕸Пещеры включены: {3}',
+                    '🐫Корованы включены: {4}',
+                    '🇪🇺Приказы включены: {5}',
+                    '🛡Авто деф включен: {6}',
+                    '💰Донат включен: {7}',
+                    '🍺Таверна включена: {8}',
+                    'Гоп-стоп 🐫Корованов включен: {9}'
                 ]).format(bot_enabled, arena_enabled, les_enabled, peshera_enabled, corovan_enabled, order_enabled,
                           auto_def_enabled, donate_enabled, taverna_enabled,  grabit_enabled))
 
