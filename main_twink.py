@@ -541,9 +541,9 @@ def parse_text(text, username, message_id):
 
             elif text == '#update_stock':
                 action_list.append('/stock')
-                action_list.append(stock_kraft)
-                action_list.append(stock_snaraga)
-                action_list.append(stock_other)
+                action_list.append(orders[stock_kraft])
+                action_list.append(orders[stock_snaraga])
+                action_list.append(orders[stock_other])
 
             # Получить статус
             elif text == '#status':
