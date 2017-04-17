@@ -372,8 +372,8 @@ def parse_text(text, username, message_id):
                 sleep(sleep_time)
                 action_list.append(cover_chosen)
 
-            elif text.find('Содержимое склада') != -1:
-                fwd(admin_username, message_id)
+            #elif text.find('Содержимое склада') != -1:
+            #    fwd(admin_username, message_id)
 
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
