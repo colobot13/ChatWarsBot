@@ -76,10 +76,7 @@ orders = {
     'kvesty': '🗺 Квесты',
     'zamok': '🏰Замок',
     'arena': '📯Арена',
-    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ',
-    'stock_kraft': '⚒Крафт',
-    'stock_snaraga': '🏷Снаряжение',
-    'stock_other': '🗃Другое'
+    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
 }
 
 captcha_answers = {
@@ -537,6 +534,16 @@ def parse_text(text, username, message_id):
 
             elif text == '#update_stock':
                 action_list.append('/stock')
+                sleep_time = random.randint(1, 3)
+                sleep(sleep_time)
+                action_list.append('⚒Крафт')
+                sleep_time = random.randint(1, 3)
+                sleep(sleep_time)
+                action_list.append('🏷Снаряжение')
+                sleep_time = random.randint(1, 3)
+                sleep(sleep_time)
+                action_list.append('🗃Другое')
+
 
             # Получить статус
             elif text == '#status':
