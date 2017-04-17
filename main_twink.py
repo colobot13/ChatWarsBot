@@ -76,10 +76,7 @@ orders = {
     'kvesty': '🗺 Квесты',
     'zamok': '🏰Замок',
     'arena': '📯Арена',
-    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ',
-    'stock_kraft': '⚒Крафт',
-    'stock_snaraga': '🏷Снаряжение',
-    'stock_other': '🗃Другое'
+    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
 }
 
 captcha_answers = {
@@ -336,6 +333,8 @@ def parse_text(text, username, message_id):
                 # Ходить в пещеру
                 elif peshera_enabled and endurance >= 2:
                     action_list.append(orders['kvesty'])
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
                     if les_enabled:
                         action_list.append(random.choice([orders['peshera'], orders['les']]))
                     else:
@@ -349,7 +348,7 @@ def parse_text(text, username, message_id):
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
                     action_list.append(orders['kvesty'])
-                    sleep_time = random.randint(1, 2)
+                    sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
@@ -541,9 +540,16 @@ def parse_text(text, username, message_id):
 
             elif text == '#update_stock':
                 action_list.append('/stock')
-                action_list.append(orders[stock_kraft])
-                action_list.append(orders[stock_snaraga])
-                action_list.append(orders[stock_other])
+                sleep_time = random.randint(1, 3)
+                sleep(sleep_time)
+                action_list.append('⚒Крафт')
+                sleep_time = random.randint(1, 3)
+                sleep(sleep_time)
+                action_list.append('🏷Снаряжение')
+                sleep_time = random.randint(1, 3)
+                sleep(sleep_time)
+                action_list.append('🗃Другое')
+
 
             # Получить статус
             elif text == '#status':
