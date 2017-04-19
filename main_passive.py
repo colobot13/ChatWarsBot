@@ -262,7 +262,13 @@ def parse_text(text, username, message_id):
                     if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
-                                gold = int(re.search('💰([0-9]+)', text).group(1))
+                                #gold = int(re.search('💰([0-9]+)', text).group(1))
+                                # Проверим на отрицательное значение бабла
+                                if text.find('💰-') != -1:
+                                    gold = 0
+                                    log('Золото 💰 отрицательное значение')
+                                else:
+                                    gold = int(re.search('💰([0-9]+)', text).group(1))
                                 log('Донат {0} золота в казну замка'.format(gold))
                                 action_list.append('/donate {0}'.format(gold))
                             update_order(castle)
@@ -272,7 +278,12 @@ def parse_text(text, username, message_id):
                     return
 
                 log('Времени достаточно')
-                gold = int(re.search('💰([0-9]+)', text).group(1))
+                # Проверим на отрицательное значение бабла
+                if text.find('💰-') != -1:
+                    gold = 0
+                    log('Золото 💰 отрицательное значение')
+                else:
+                    gold = int(re.search('💰([0-9]+)', text).group(1))
                 endurance = int(re.search('Выносливость: ([0-9]+)', text).group(1))
                 uroven = int(re.search('Уровень: ([0-9]+)', text).group(1))
                 log('Уровень: {0}, Золото: {1}, выносливость: {2}'.format(uroven, gold, endurance))
@@ -569,8 +580,8 @@ def parse_text(text, username, message_id):
                     '💰Донат включен: {7}',
                     '🍺Таверна включена: {8}',
                     'Гоп-стоп 🐫Корованов включен: {9}'
-                ]).format(bot_enabled, arena_enabled, les_enabled, peshera_enabled, corovan_enabled, order_enabled,
-                          auto_def_enabled, donate_enabled, taverna_enabled,  grabit_enabled))
+                ]).format(bot_enabled, arena_enabled, les_enabled, peshera_enabled, grabit_enabled, order_enabled,
+                          auto_def_enabled, donate_enabled, taverna_enabled, corovan_enabled))
 
             # Информация о герое
             elif text == '#hero':
