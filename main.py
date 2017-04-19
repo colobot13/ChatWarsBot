@@ -236,7 +236,7 @@ def parse_text(text, username, message_id):
             if corovan_enabled and text.find(' /go') != -1:
                 action_list.append(orders['corovan'])
 
-            elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1:
+            elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1 or text.find('Арена закрыта на ночь') != -1 :
                 arena_closed = True
                 lt_info = time()
                 action_list.append(orders['hero'])
