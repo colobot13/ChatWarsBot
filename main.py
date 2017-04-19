@@ -254,6 +254,8 @@ def parse_text(text, username, message_id):
                 m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
+                    if m.group(2) and int(m.group(2)) <= 15 and castle_name == 'blue':
+                        fwd(oyster_bot, message_id)
                     if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
