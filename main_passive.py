@@ -241,7 +241,7 @@ def parse_text(text, username, message_id):
             if corovan_enabled and text.find(' /go') != -1:
                 action_list.append(orders['corovan'])
 
-            elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1:
+            elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1 or text.find('Арена закрыта на ночь') != -1 :
                 arena_closed = True
                 lt_info = time()
                 action_list.append(orders['hero'])
@@ -340,8 +340,8 @@ def parse_text(text, username, message_id):
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
-                # Ходить на арену каждые 30 мин
-                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 1800 \
+                # Ходить на арену каждые 15 мин
+                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 900 \
                         and not arena_closed:
                     if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
