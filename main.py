@@ -188,7 +188,6 @@ def queue_worker():
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
-                #lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
@@ -254,13 +253,11 @@ def parse_text(text, username, message_id):
 
             elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1 or text.find('Арена закрыта на ночь') != -1 :
                 arena_closed = True
-                #lt_info = time()
                 action_list.append(orders['hero'])
 
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
-                #lt_info = time()
                 return
 
             elif text.find('Битва пяти замков через') != -1:
@@ -276,7 +273,6 @@ def parse_text(text, username, message_id):
                     if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
-                                #gold = int(re.search('💰([0-9]+)', text).group(1))
                                 # Проверим на отрицательное значение бабла
                                 if text.find('💰-') != -1:
                                     gold = 0
@@ -372,7 +368,6 @@ def parse_text(text, username, message_id):
             # Оправим репорт если это сообщение о итоге битвы на арене
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
-                #lt_info = time()
                 if castle_name == 'blue':
                     fwd(stock_bot, message_id)
                     if text.find('Поздравляем!') != -1:
@@ -417,7 +412,7 @@ def parse_text(text, username, message_id):
                 
                 # Уберу пока режим полуавтоматический
                 #action_list.append(orders['hero'])
-                #lt_info = time()
+
 
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
