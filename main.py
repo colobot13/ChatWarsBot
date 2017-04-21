@@ -180,7 +180,7 @@ def queue_worker():
     # Глобальный цикл работы программы
     while True:
         try:
-            if time() - lt_info > 1200 and lt_info > 0 and bot_enabled = True:
+            if time() - lt_info > 1200 and lt_info > 0 and bot_enabled == True:
                 send_msg(admin_username, "Сообщения о герое давно не было. Выключаем бота")
                 log('Сообщения о герое давно не было. Выключаем бота')
                 bot_enabled = False
