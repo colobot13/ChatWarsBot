@@ -702,7 +702,7 @@ def update_order(order):
 
 
 def log(text):
-    message = '{%H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
+    message = '{0:%Y-%m-%d %H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
     print(message)
     log_list.append(message)
 
