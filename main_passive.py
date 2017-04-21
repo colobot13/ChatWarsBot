@@ -114,7 +114,7 @@ current_order = {'time': 0, 'order': castle}
 
 sender = Sender(host=host, port=port)
 action_list = deque([])
-log_list = deque([], maxlen=50)
+log_list = deque([], maxlen=30)
 lt_arena = 0
 lt_info = 0
 lt_zapr = 0
@@ -174,7 +174,7 @@ def queue_worker():
     sender.dialog_list()
     sleep(5)
     try:
-        send_msg(admin_username, "Привет Командир! Можешь управлять мной через чат. Для начала нажми команду #help")
+        send_msg(admin_username, "Привет Командир! Для начала нажми команду #help")
     except Exception as err:
         print('Ошибка отправки Привет Командир')
         sys.exit()
@@ -227,7 +227,7 @@ def parse_text(text, username, message_id):
     global castle_name
     global castle
     if username == bot_username:
-        log('Получили сообщение от бота. Проверяем условия')
+        log('Получили сообщение от бота.')
 
         if "На выходе из замка охрана никого не пропускает" in text:
             action_list.clear()
@@ -362,7 +362,7 @@ def parse_text(text, username, message_id):
                     if les_enabled:
                         action_list.append(random.choice([orders['peshera'], orders['les']]))
                     else:
-                    action_list.append(orders['peshera'])
+                        action_list.append(orders['peshera'])
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
@@ -702,7 +702,7 @@ def update_order(order):
 
 
 def log(text):
-    message = '{0:%Y-%m-%d %H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
+    message = '{%H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
     print(message)
     log_list.append(message)
 
