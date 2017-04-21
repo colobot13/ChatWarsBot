@@ -195,10 +195,9 @@ def queue_worker():
                     arena_closed = False
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
-                    send_msg(bot_username, orders['hero'])
                     lt_zapr = time()
+                    send_msg(bot_username, orders['hero'])
                 continue
-
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
