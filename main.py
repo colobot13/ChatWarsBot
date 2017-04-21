@@ -188,7 +188,6 @@ def queue_worker():
                 send_msg(admin_username, "Сообщения о герое давно не было. Выключаем бота")
                 log('Сообщения о герое давно не было. Выключаем бота')
                 bot_enabled = False
-                lt_info = 0
             if time() - lt_zapr > get_info_diff:
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
