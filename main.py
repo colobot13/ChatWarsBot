@@ -180,13 +180,10 @@ def queue_worker():
     # Глобальный цикл работы программы
     while True:
         try:
+            if time() - lt_info > 300 and lt_info > 0:
+                send_msg(admin_username, "Сообщения о герое давно не было. Выключаем бота")
+                bot_enabled = False
             if time() - lt_info > get_info_diff:
-                print('Time')
-                print(time())
-                print('lt_info')
-                print(lt_info)
-                print('get_info_diff')
-                print(get_info_diff)
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
