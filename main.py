@@ -156,6 +156,7 @@ def queue_worker():
     global get_info_diff
     global arena_closed
     global lt_info
+    global bot_enabled
     #print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
@@ -180,6 +181,12 @@ def queue_worker():
     while True:
         try:
             if time() - lt_info > get_info_diff:
+                print('Time')
+                print(time())
+                print('lt_info')
+                print(lt_info)
+                print('get_info_diff')
+                print(get_info_diff)
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
