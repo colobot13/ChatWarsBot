@@ -112,10 +112,11 @@ castle = orders[castle_name]
 # текущий приказ на атаку/защиту, по умолчанию всегда защита
 current_order = {'time': 0, 'order': castle}
 
-sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=port)
+sender = Sender(host=host, port=port)
 action_list = deque([])
-log_list = deque([], maxlen=30)
+log_list = deque([], maxlen=50)
 lt_arena = 0
+lt_info = 0
 arena_closed = False
 get_info_diff = 600
 hero_message_id = 0
@@ -154,7 +155,8 @@ def work_with_message(receiver):
 def queue_worker():
     global get_info_diff
     global arena_closed
-    lt_info = 0
+    global lt_info
+    global bot_enabled
     #print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
@@ -178,11 +180,14 @@ def queue_worker():
     # Глобальный цикл работы программы
     while True:
         try:
+            if time() - lt_info > 1200 and lt_info > 0 and bot_enabled == True:
+                send_msg(admin_username, "Сообщения о герое давно не было. Выключаем бота")
+                log('Сообщения о герое давно не было. Выключаем бота')
+                bot_enabled = False
             if time() - lt_info > get_info_diff:
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
-                lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
@@ -248,16 +253,15 @@ def parse_text(text, username, message_id):
 
             elif text.find('На сегодня ты уже своё отвоевал. Приходи завтра.') != -1 or text.find('Арена закрыта на ночь') != -1 :
                 arena_closed = True
-                lt_info = time()
                 action_list.append(orders['hero'])
 
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
-                lt_info = time()
                 return
 
             elif text.find('Битва пяти замков через') != -1:
+                lt_info = time()
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
@@ -267,7 +271,6 @@ def parse_text(text, username, message_id):
                     if m.group(2) and int(m.group(2)) <= 30:
                         if auto_def_enabled and time() - current_order['time'] > 3600:
                             if donate_enabled:
-                                #gold = int(re.search('💰([0-9]+)', text).group(1))
                                 # Проверим на отрицательное значение бабла
                                 if text.find('💰-') != -1:
                                     gold = 0
@@ -318,21 +321,26 @@ def parse_text(text, username, message_id):
                     action_list.append('/class')
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
-                    if 5 <= uroven <= 9:
+                    if 4 < uroven < 9:
                         log('/class 🛠 Мастер 📦')
                         action_list.append('🛠 Мастер 📦')
-                    if 10 <= uroven <= 14:
+                    if 9 < uroven < 15:
                         log('/class 📚 Обучение')
                         action_list.append('📚 Обучение')
-                    if uroven > 14:
+                    if 14 < uroven < 20:
                         log('15 Уровень Нужно выбрать специализацию')
                         # Можно сделать кузнеца, но зачем :)
                         action_list.append('📦 Добытчик')
                         send_msg(admin_username, '15 Уровень. Теперь я настоящий 📦 Добытчик')
-                    if uroven > 19:
+                    if 19 < uroven < 25:
                         log('20 Уровень Нужно выбрать специализацию')
+                        action_list.append('📚 Обучение')
+                        send_msg(admin_username, '20 Уровень')
+                    if 24 < uroven < 30:
+                        log('25 Уровень Нужно выбрать специализацию')
                         #action_list.append('📚 Обучение')
-                        send_msg(admin_username, '20 Уровень Нужно выбрать специализацию')
+                        send_msg(admin_username, '25 Уровень. Нужно глянуть')
+
 
                 # Грабить корованы
                 elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
@@ -405,7 +413,7 @@ def parse_text(text, username, message_id):
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
                 action_list.append(orders['hero'])
-                lt_info = time()
+
 
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
