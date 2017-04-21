@@ -197,6 +197,7 @@ def queue_worker():
                     lt_zapr = time()
                     send_msg(bot_username, orders['hero'])
                 continue
+
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
@@ -327,7 +328,10 @@ def parse_text(text, username, message_id):
                     action_list.append(orders['kvesty'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
-                    action_list.append(orders['peshera'])
+                    if les_enabled:
+                        action_list.append(random.choice([orders['peshera'], orders['les']]))
+                    else:
+                        action_list.append(orders['peshera'])
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
