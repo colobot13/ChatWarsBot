@@ -321,7 +321,7 @@ def parse_text(text, username, message_id):
                     if les_enabled:
                         action_list.append(random.choice([orders['peshera'], orders['les']]))
                     else:
-                    action_list.append(orders['peshera'])
+                        action_list.append(orders['peshera'])
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
