@@ -112,12 +112,10 @@ castle = orders[castle_name]
 # текущий приказ на атаку/защиту, по умолчанию всегда защита
 current_order = {'time': 0, 'order': castle}
 
-sender = Sender(host=host, port=port)
+sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=port)
 action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
-lt_info = 0
-lt_zapr = 0
 arena_closed = False
 get_info_diff = 600
 hero_message_id = 0
@@ -156,9 +154,7 @@ def work_with_message(receiver):
 def queue_worker():
     global get_info_diff
     global arena_closed
-    global lt_info
-    global bot_enabled
-    global lt_zapr
+    lt_info = 0
     #print(sender.contacts_search(bot_username))
     #print(sender.contacts_search(captcha_bot))
     #print(sender.contacts_search(admin_username))
@@ -179,22 +175,16 @@ def queue_worker():
         print('Ошибка отправки Привет Командир')
         sys.exit()
 
-    lt_info = time()
-
     # Глобальный цикл работы программы
     while True:
         try:
-            if time() - lt_info > 1200 and bot_enabled == True:
-                send_msg(admin_username, "Сообщения о герое давно не было. Выключаем бота")
-                log('Сообщения о герое давно не было. Выключаем бота')
-                bot_enabled = False
-            if time() - lt_zapr > get_info_diff:
+            if time() - lt_info > get_info_diff:
                 if arena_closed and dt.datetime.now().time() >= dt.time(13, 1) and \
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
+                lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
-                    lt_zapr = time()
                     send_msg(bot_username, orders['hero'])
                 continue
 
@@ -211,7 +201,6 @@ def parse_text(text, username, message_id):
     global lt_arena
     global arena_closed
     global lt_info
-    global lt_zapr
     global hero_message_id
     global bot_enabled
     global arena_enabled
@@ -264,11 +253,12 @@ def parse_text(text, username, message_id):
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
             elif text.find('Битва пяти замков через несколько секунд!') != -1:
+                lt_info = time()
                 return
 
             elif text.find('Битва пяти замков через') != -1:
                 lt_info = time()
-                lt_zapr = time()
+
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
@@ -367,12 +357,12 @@ def parse_text(text, username, message_id):
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
                     action_list.append(orders['kvesty'])
-                    sleep_time = random.randint(1, 2)
+                    sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
-                # Ходить на арену каждые 30 мин
-                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 1800 \
+                # Ходить на арену каждые 15 мин
+                elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 900 \
                         and not arena_closed:
                     if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
@@ -408,7 +398,7 @@ def parse_text(text, username, message_id):
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
                 action_list.append(orders['hero'])
- 
+
 
             # Здесь нужно все прописать на что не реагировать   
             #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
@@ -499,8 +489,7 @@ def parse_text(text, username, message_id):
                 bot_enabled = True
                 send_msg(admin_username, 'Бот успешно включен')
                 send_msg(bot_username, orders['hero'])
-                lt_info = time()
-                lt_zapr = time()
+
             elif text == '#disable_bot':
                 bot_enabled = False
                 send_msg(admin_username, 'Бот успешно выключен')
