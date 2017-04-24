@@ -167,12 +167,18 @@ def queue_worker():
     if order_usernames != '':
         for name in order_usernames:
             print(sender.contacts_search(name))
+    print(sender.contacts_search(captcha_bot))        
     sender.dialog_list()
     sleep(5)
     try:
         send_msg(admin_username, "Привет Командир! Для начала нажми команду #help")
     except Exception as err:
         print('Ошибка отправки Привет Командир')
+        sys.exit()
+    try:
+        send_msg(captcha_bot, "/start")
+    except Exception as err:
+        print('Ошибка отправки /start captcha_bot')
         sys.exit()
 
     # Глобальный цикл работы программы
