@@ -197,7 +197,7 @@ def queue_worker():
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
-            sleep_time = random.randint(2, 4)
+            sleep_time = random.randint(1, 3)
             sleep(sleep_time)
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
@@ -248,7 +248,56 @@ def parse_text(text, username, message_id):
             send_msg(admin_username, "Ура, угадали капчу! Запускаю бота")
             bot_enabled = True
 
-        if bot_enabled:
+        elif "Выбери замок, за который ты будешь сражаться" in text:
+            action_list.append('🇪🇺Синий замок🇪🇺')
+
+        elif "Привет, новобранец! А что же ты без меча пришел на доклад?" in text:
+            action_list.append(orders['kvesty'])
+            sleep_time = random.randint(1, 3)
+            sleep(sleep_time)
+            action_list.append(orders['les'])
+
+        elif "Теперь нажми 🏰Замок для дальнейших указаний" in text:
+            action_list.append(orders['zamok'])
+
+        elif "Как закончишь, нажми 🏰Замок" in text:
+            action_list.append(orders['zamok'])
+
+        elif "Чтобы вооружиться, нажми /gift" in text:
+            action_list.append('/gift')
+
+        elif "Экипируйся. Для этого нажми /inv" in text:
+            action_list.append('/inv')
+            sleep(1)
+            action_list.append('/on_100')
+            sleep(1)
+            action_list.append('/on_212')
+            sleep(1)
+            action_list.append(orders['zamok'])
+            sleep(1)
+            action_list.append('🏚Лавка')
+            sleep(1)
+            action_list.append('Снаряжение')
+            sleep(1)
+            action_list.append('Перчатки')
+            sleep(1)
+            action_list.append('Сапоги')
+            sleep(1)
+            action_list.append('Броня')
+            sleep(1)
+            action_list.append('Шлем')
+            sleep(1)
+            action_list.append('/on_225')
+            sleep(1)
+            action_list.append('/on_218')
+            sleep(1)
+            action_list.append('/on_200')
+            sleep(1)
+            action_list.append('/on_206')
+            sleep(1)
+            action_list.append(orders['hero'])
+
+        elif bot_enabled:
             if corovan_enabled and text.find(' /go') != -1:
                 action_list.append(orders['corovan'])
 
