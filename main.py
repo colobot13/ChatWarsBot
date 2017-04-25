@@ -145,8 +145,10 @@ def work_with_message(receiver):
                     and msg['sender']['peer_id'] == 777000:
                 kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
                 send_msg(admin_username, str(kod*2))
-            elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
-                parse_text(msg['text'], msg['sender']['username'], msg['id'])
+            elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
+                    and msg['date'] is not None:
+                if (time() - msg['date']) < 20:
+                    parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
             log('Ошибка coroutine: {0}'.format(err))
 
@@ -191,7 +193,7 @@ def queue_worker():
             if len(action_list):
                 log('Отправляем ' + action_list[0])
                 send_msg(bot_username, action_list.popleft())
-            sleep_time = random.randint(2, 4)
+            sleep_time = random.randint(1, 3)
             sleep(sleep_time)
         except Exception as err:
             log('Ошибка очереди: {0}'.format(err))
