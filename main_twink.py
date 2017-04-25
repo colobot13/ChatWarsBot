@@ -145,10 +145,11 @@ def work_with_message(receiver):
                     and msg['sender']['peer_id'] == 777000:
                 kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
                 send_msg(admin_username, str(kod*2))
-            elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None:
-                if msg['date'] is not None:
-                    print(time() - msg['date'])
-                parse_text(msg['text'], msg['sender']['username'], msg['id'])
+            elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
+                    and msg['date'] is not None:
+                if (time() - msg['date']) < 20:
+                    #print(time() - msg['date'])
+                    parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
             log('Ошибка coroutine: {0}'.format(err))
 
@@ -288,6 +289,14 @@ def parse_text(text, username, message_id):
             action_list.append('Броня')
             sleep(1)
             action_list.append('Шлем')
+            sleep(1)
+            action_list.append('/buy_helmet1')
+            sleep(1)
+            action_list.append('/buy_armor1')
+            sleep(1)
+            action_list.append('/buy_boots1')
+            sleep(1)
+            action_list.append('/buy_gloves1')
             sleep(1)
             action_list.append('/on_225')
             sleep(1)
