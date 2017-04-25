@@ -141,7 +141,7 @@ def work_with_message(receiver):
         msg = (yield)
         print('Full dump: {array}'.format(array=str(msg)))
         print(' ')
-        print(str(time()))
+        print(time() - msg['date'])
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['sender']['peer_id'] == 777000:
