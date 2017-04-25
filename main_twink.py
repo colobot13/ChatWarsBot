@@ -139,10 +139,10 @@ def work_with_message(receiver):
     kod = 0
     while True:
         msg = (yield)
-        print('Full dump: {array}'.format(array=str(msg)))
-        print(' ')
-        print(time() - msg['date'])
+        #print('Full dump: {array}'.format(array=str(msg)))
         try:
+            if msg['date'] is not None:
+                print(time() - msg['date'])
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['sender']['peer_id'] == 777000:
                 kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
