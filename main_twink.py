@@ -484,6 +484,8 @@ def parse_text(text, username, message_id):
 
     elif username == trade_bot:
         if text.find('Твой склад с материалами:') != -1:
+            channel_join('ChatWarsMarket')
+            #channel_leave('ChatWarsMarket')
             m = re.search('/add_106   Порошок x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_106 '+str(m.group(1)))
