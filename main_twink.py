@@ -490,6 +490,36 @@ def parse_text(text, username, message_id):
             m = re.search('/add_101   Ветки x ([0-9]+)', text)
             if m.group(1):
                 send_msg(trade_bot, '/add_101 '+str(m.group(1)))
+            m = re.search('/add_103   Кость животного ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_103 '+str(m.group(1)))
+            m = re.search('/add_128   Стальная нить x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_128 '+str(m.group(1)))
+            m = re.search('/add_107   Железная руда x x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_107 '+str(m.group(1)))
+            m = re.search('/add_114   Сапфир x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_114 '+str(m.group(1)))
+            m = re.search('/add_116   Рубин x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_116 '+str(m.group(1)))
+            m = re.search('/add_117   Загуститель x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_117 '+str(m.group(1)))
+            m = re.search('/add_115   Растворитель x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_115 '+str(m.group(1)))
+            m = re.search('/add_112   Философский камень x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_112 '+str(m.group(1)))
+            m = re.search('/add_120   Костяная пудра x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_120 '+str(m.group(1)))
+            m = re.search('/add_123   Очищенная пудра x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_123 '+str(m.group(1)))
 
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
