@@ -500,7 +500,7 @@ def parse_text(text, username, message_id):
             if m:
                 send_msg(trade_bot, '/add_128 '+str(m.group(1)))
 
-            m = re.search('/add_107   Железная руда x x ([0-9]+)', text)
+            m = re.search('/add_107   Железная руда x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_107 '+str(m.group(1)))
 
@@ -531,6 +531,19 @@ def parse_text(text, username, message_id):
             m = re.search('/add_123   Очищенная пудра x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_123 '+str(m.group(1)))
+
+            m = re.search('/add_109   Серебряная руда x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_109 '+str(m.group(1)))
+
+            m = re.search('/add_111   Мифриловая руда x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_111 '+str(m.group(1)))
+
+            m = re.search('/add_103   Кость животного x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_103 '+str(m.group(1)))
+
 
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
