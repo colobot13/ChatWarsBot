@@ -22,7 +22,7 @@ oyster_bot = 'B'+'l'+'u'+'e'+'O'+'y'+'s'+'t'+'e'+'r'+'B'+'o'+'t'
 
 captcha_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'C'+'a'+'p'+'t'+'c'+'h'+'a'+'B'+'o'+'t'
 
-trade_bot 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'T'+'r'+'a'+'d'+'e'+'B'+'o'+'t'
+trade_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'T'+'r'+'a'+'d'+'e'+'B'+'o'+'t'
 
 # ваш username или username человека, который может отправлять запросы этому скрипту
 admin_username = ''
@@ -484,10 +484,13 @@ def parse_text(text, username, message_id):
 
     elif username == trade_bot:
         if text.find('Твой склад с материалами:') != -1:
-            resi = int(re.search('/add_106   Порошок x ([0-9]+)', text).group(1))
-            if resi > 0:
-                action_list.append('/add_106 '+str(resi))
-            
+            poroshok = int(re.search('/add_106   Порошок x ([0-9]+)', text).group(1))
+            if poroshok > 0:
+                send_msg(trade_bot, '/add_106 '+str(poroshok))
+            vetki = int(re.search('/add_101   Ветки x ([0-9]+)', text).group(1))
+            if vetki > 0:
+                send_msg(trade_bot, '/add_101 '+str(vetki))
+
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
                 not text.find('Топы отряда') != -1 and len(text) <= 200:
