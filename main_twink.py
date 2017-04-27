@@ -22,6 +22,8 @@ oyster_bot = 'B'+'l'+'u'+'e'+'O'+'y'+'s'+'t'+'e'+'r'+'B'+'o'+'t'
 
 captcha_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'C'+'a'+'p'+'t'+'c'+'h'+'a'+'B'+'o'+'t'
 
+trade_bot 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'T'+'r'+'a'+'d'+'e'+'B'+'o'+'t'
+
 # ваш username или username человека, который может отправлять запросы этому скрипту
 admin_username = ''
 
@@ -148,7 +150,6 @@ def work_with_message(receiver):
             elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['date'] is not None:
                 if (time() - msg['date']) < 20:
-                    #print(time() - msg['date'])
                     parse_text(msg['text'], msg['sender']['username'], msg['id'])
         except Exception as err:
             log('Ошибка coroutine: {0}'.format(err))
@@ -479,6 +480,13 @@ def parse_text(text, username, message_id):
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
+
+
+    elif username == trade_bot:
+        if text.find('Твой склад с материалами:') != -1:
+            resi = int(re.search('/add_106   Порошок x ([0-9]+)', text).group(1))
+            if resi > 0:
+                action_list.append('/add_106 '+str(resi))
             
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
