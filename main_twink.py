@@ -484,12 +484,12 @@ def parse_text(text, username, message_id):
 
     elif username == trade_bot:
         if text.find('Твой склад с материалами:') != -1:
-            poroshok = int(re.search('/add_106   Порошок x ([0-9]+)', text).group(1))
-            if poroshok > 0:
-                send_msg(trade_bot, '/add_106 '+str(poroshok))
-            vetki = int(re.search('/add_101   Ветки x ([0-9]+)', text).group(1))
-            if vetki > 0:
-                send_msg(trade_bot, '/add_101 '+str(vetki))
+            m = re.search('/add_106   Порошок x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_106 '+str(m.group(1)))
+            m = re.search('/add_101   Ветки x ([0-9]+)', text)
+            if m.group(1):
+                send_msg(trade_bot, '/add_101 '+str(m.group(1)))
 
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
