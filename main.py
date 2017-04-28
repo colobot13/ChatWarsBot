@@ -139,7 +139,7 @@ def work_with_message(receiver):
     kod = 0
     while True:
         msg = (yield)
-        #print('Full dump: {array}'.format(array=str(msg)))
+        print('Full dump: {array}'.format(array=str(msg)))
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['sender']['peer_id'] == 777000:
