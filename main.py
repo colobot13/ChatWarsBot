@@ -139,7 +139,7 @@ def work_with_message(receiver):
     kod = 0
     while True:
         msg = (yield)
-        print('Full dump: {array}'.format(array=str(msg)))
+        #print('Full dump: {array}'.format(array=str(msg)))
         try:
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['sender']['peer_id'] == 777000:
@@ -163,14 +163,14 @@ def queue_worker():
     #print(sender.contacts_search(stock_bot))
     #print(sender.contacts_search(oyster_bot))
     #print(sender.contacts_search(bot_report))
-    sleep(5)
+    sleep(2)
     if admin_username != '':
         print(sender.contacts_search(admin_username))
     if order_usernames != '':
         for name in order_usernames:
             print(sender.contacts_search(name))
     sender.dialog_list()
-    sleep(5)
+    sleep(2)
     try:
         send_msg(admin_username, "Привет Командир! Для начала нажми команду #help")
     except Exception as err:
