@@ -430,7 +430,7 @@ def parse_text(text, username, message_id):
             
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
-                not text.find('Топы отряда') != -1 and len(text) <= 200:
+                not text.find('Топы отряда') != -1 and len(text) <= 200 and time_for_orders(dt.datetime.now().time()):
             if text.find(orders['red']) != -1:
                 update_order(orders['red'])
             elif text.find(orders['black']) != -1:
@@ -665,6 +665,17 @@ def time_for_battle(tektime):
             (dt.time(19, 40) <= tektime <= dt.time(20, 5)):
         battletime = True
     return battletime
+
+def time_for_orders(tektime):
+    orderstime = False
+    if (dt.time(23, 50) <=  tektime <= dt.time(0, 0)) or \
+            (dt.time(3, 50) <= tektime <= dt.time(4, 0)) or \
+            (dt.time(7, 50) <= tektime <= dt.time(8, 0)) or \
+            (dt.time(11, 50) <=  tektime <= dt.time(12, 0)) or \
+            (dt.time(15, 50) <= tektime <= dt.time(16, 0)) or \
+            (dt.time(19, 50) <= tektime <= dt.time(20, 0)):
+        orderstime = True
+    return orderstime
 
 def time_for_arena(tektime):
     arenatime = False
