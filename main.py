@@ -22,6 +22,8 @@ oyster_bot = 'B'+'l'+'u'+'e'+'O'+'y'+'s'+'t'+'e'+'r'+'B'+'o'+'t'
 
 captcha_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'C'+'a'+'p'+'t'+'c'+'h'+'a'+'B'+'o'+'t'
 
+trade_bot = 'C'+'h'+'a'+'t'+'W'+'a'+'r'+'s'+'T'+'r'+'a'+'d'+'e'+'B'+'o'+'t'
+
 # ваш username или username человека, который может отправлять запросы этому скрипту
 admin_username = ''
 
@@ -62,6 +64,8 @@ orders = {
     'white': '🇨🇾',
     'yellow': '🇻🇦',
     'blue': '🇪🇺',
+    'mint': '🇲🇴',
+    'twilight': '🇰🇮',
     'lesnoi_fort': '🌲Лесной форт',
     'les': '🌲Лес',
     'gorni_fort': '⛰Горный форт',
@@ -73,8 +77,8 @@ orders = {
     'corovan': '/go',
     'peshera': '🕸Пещера',
     'taverna': '🍺Взять кружку эля',
-    'kvesty': '🗺 Квесты',
-    'zamok': '🏰Замок',
+    'quests': '🗺 Квесты',
+    'castle_menu': '🏰Замок',
     'arena': '📯Арена',
     'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
 }
@@ -132,7 +136,7 @@ auto_def_enabled = True
 donate_enabled = False
 grabit_enabled = False
 
-
+lt_tradebot_send = 0
 
 @coroutine
 def work_with_message(receiver):
@@ -157,24 +161,24 @@ def queue_worker():
     global get_info_diff
     global arena_closed
     lt_info = 0
-    #print(sender.contacts_search(bot_username))
-    #print(sender.contacts_search(captcha_bot))
-    #print(sender.contacts_search(admin_username))
-    #print(sender.contacts_search(stock_bot))
-    #print(sender.contacts_search(oyster_bot))
-    #print(sender.contacts_search(bot_report))
     sleep(2)
     if admin_username != '':
         print(sender.contacts_search(admin_username))
     if order_usernames != '':
         for name in order_usernames:
             print(sender.contacts_search(name))
+    print(sender.contacts_search(captcha_bot))        
     sender.dialog_list()
     sleep(2)
     try:
         send_msg(admin_username, "Привет Командир! Для начала нажми команду #help")
     except Exception as err:
         print('Ошибка отправки Привет Командир')
+        sys.exit()
+    try:
+        send_msg(captcha_bot, "/start")
+    except Exception as err:
+        print('Ошибка отправки /start captcha_bot')
         sys.exit()
 
     # Глобальный цикл работы программы
@@ -217,13 +221,14 @@ def parse_text(text, username, message_id):
     global grabit_enabled
     global castle_name
     global castle
+    global lt_tradebot_send
     if username == bot_username:
         log('Получили сообщение от бота.')
 
         if "На выходе из замка охрана никого не пропускает" in text:
             action_list.clear()
-            send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
-            fwd(admin_username, message_id)
+            #send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
+            #fwd(admin_username, message_id)
             last_captcha_id = message_id
             fwd(captcha_bot, message_id)
             bot_enabled = False
@@ -241,7 +246,7 @@ def parse_text(text, username, message_id):
             bot_enabled = False
 
         elif 'Ты ответил правильно' in text:
-            send_msg(admin_username, "Ура, угадали капчу! Запускаю бота")
+            #send_msg(admin_username, "Ура, угадали капчу! Запускаю бота")
             bot_enabled = True
 
         if bot_enabled:
@@ -310,14 +315,14 @@ def parse_text(text, username, message_id):
                 
                 # Грабить корованы
                 if grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
-                    action_list.append(orders['kvesty'])
+                    action_list.append(orders['quests'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['grabit'])
                 
                 # Ходить в пещеру
                 elif peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
-                    action_list.append(orders['kvesty'])
+                    action_list.append(orders['quests'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     if les_enabled:
@@ -327,7 +332,7 @@ def parse_text(text, username, message_id):
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
-                    action_list.append(orders['kvesty'])
+                    action_list.append(orders['quests'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['les'])
@@ -338,7 +343,7 @@ def parse_text(text, username, message_id):
                     if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                        action_list.append(orders['zamok'])
+                        action_list.append(orders['castle_menu'])
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                         action_list.append(orders['arena'])
@@ -436,6 +441,10 @@ def parse_text(text, username, message_id):
                 update_order(orders['yellow'])
             elif text.find(orders['blue']) != -1:
                 update_order(orders['blue'])
+            elif text.find(orders['mint']) != -1:
+                update_order(orders['mint'])
+            elif text.find(orders['twilight']) != -1:
+                update_order(orders['twilight'])
             elif text.find('🌲') != -1:
                 update_order(orders['lesnoi_fort'])
             elif text.find('⛰') != -1:
@@ -674,6 +683,10 @@ def hero_castle(heroinf):
         return 'black'
     elif heroinf.find(orders['white']) != -1:
         return 'white'
+    elif heroinf.find(orders['mint']) != -1:
+        return 'mint'
+    elif heroinf.find(orders['twilight']) != -1:
+        return 'twilight'
 
 def update_order(order):
     current_order['order'] = order
@@ -683,7 +696,8 @@ def update_order(order):
     else:
         action_list.append(orders['attack'])
     action_list.append(order)
-
+    # В главном акк и вторичном такое не нужно
+    #action_list.append(orders['hero'])
 
 def log(text):
     message = '{0:%Y-%m-%d %H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
