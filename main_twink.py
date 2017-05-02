@@ -115,13 +115,6 @@ arena_attack = ['🗡в голову', '🗡по корпусу', '🗡по но
 castle = orders[castle_name]
 # текущий приказ на атаку/защиту, по умолчанию всегда защита
 current_order = {'time': 0, 'order': castle}
-# задаем получателя ответов бота: админ или группа
-if group_name =='':
-    pref = '@'
-    msg_receiver = admin_username
-else:
-    pref = ''
-    msg_receiver = group_name
 
 sender = Sender(sock=socket_path) if socket_path else Sender(host=host, port=port)
 action_list = deque([])
