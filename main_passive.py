@@ -175,7 +175,7 @@ def queue_worker():
     except Exception as err:
         print('Ошибка отправки Привет Командир')
         sys.exit()
-        try:
+    try:
         send_msg(captcha_bot, "/start")
     except Exception as err:
         print('Ошибка отправки /start captcha_bot')
