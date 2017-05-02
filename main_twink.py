@@ -43,7 +43,7 @@ host = 'localhost'
 port = 1337
 
 # имя группы
-group_name = 'Miners'
+group_name = ''
 
 opts, args = getopt(sys.argv[1:], 'a:o:c:s:h:p', ['admin=', 'order=', 'castle=', 'socket=', 'host=', 'port='])
 
@@ -869,7 +869,7 @@ def update_order(order):
     else:
         action_list.append(orders['attack'])
     action_list.append(order)
-
+    action_list.append(orders['hero'])
 
 def log(text):
     message = '{0:%Y-%m-%d %H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
