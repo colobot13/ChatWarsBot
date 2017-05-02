@@ -64,6 +64,8 @@ orders = {
     'white': '🇨🇾',
     'yellow': '🇻🇦',
     'blue': '🇪🇺',
+    'mint': '🇲🇴',
+    'twilight': '🇰🇮',
     'lesnoi_fort': '🌲Лесной форт',
     'les': '🌲Лес',
     'gorni_fort': '⛰Горный форт',
@@ -75,8 +77,8 @@ orders = {
     'corovan': '/go',
     'peshera': '🕸Пещера',
     'taverna': '🍺Взять кружку эля',
-    'kvesty': '🗺 Квесты',
-    'zamok': '🏰Замок',
+    'quests': '🗺 Квесты',
+    'castle_menu': '🏰Замок',
     'arena': '📯Арена',
     'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
 }
@@ -134,7 +136,7 @@ auto_def_enabled = True
 donate_enabled = False
 grabit_enabled = False
 
-
+lt_tradebot_send = 0
 
 @coroutine
 def work_with_message(receiver):
@@ -225,6 +227,7 @@ def parse_text(text, username, message_id):
     global grabit_enabled
     global castle_name
     global castle
+    global lt_tradebot_send
     if username == bot_username:
         log('Получили сообщение от бота.')
 
@@ -256,16 +259,16 @@ def parse_text(text, username, message_id):
             action_list.append('🇪🇺Синий замок🇪🇺')
 
         elif "Привет, новобранец! А что же ты без меча пришел на доклад?" in text:
-            action_list.append(orders['kvesty'])
+            action_list.append(orders['quests'])
             sleep_time = random.randint(1, 3)
             sleep(sleep_time)
             action_list.append(orders['les'])
 
         elif "Теперь нажми 🏰Замок для дальнейших указаний" in text:
-            action_list.append(orders['zamok'])
+            action_list.append(orders['castle_menu'])
 
         elif "Как закончишь, нажми 🏰Замок" in text:
-            action_list.append(orders['zamok'])
+            action_list.append(orders['castle_menu'])
 
         elif "Чтобы вооружиться, нажми /gift" in text:
             action_list.append('/gift')
@@ -277,7 +280,7 @@ def parse_text(text, username, message_id):
             sleep(1)
             action_list.append('/on_212')
             sleep(1)
-            action_list.append(orders['zamok'])
+            action_list.append(orders['castle_menu'])
             sleep(1)
             action_list.append('🏚Лавка')
             sleep(1)
@@ -408,14 +411,14 @@ def parse_text(text, username, message_id):
 
                 # Грабить корованы
                 elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
-                    action_list.append(orders['kvesty'])
+                    action_list.append(orders['quests'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['grabit'])
                 
                 # Ходить в пещеру
                 elif peshera_enabled and endurance >= 2 and orders['peshera'] not in action_list:
-                    action_list.append(orders['kvesty'])
+                    action_list.append(orders['quests'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     if les_enabled:
@@ -425,7 +428,7 @@ def parse_text(text, username, message_id):
 
                 # Ходить в лес
                 elif les_enabled and endurance >= 2 and orders['les'] not in action_list:
-                    action_list.append(orders['kvesty'])
+                    action_list.append(orders['quests'])
                     sleep_time = random.randint(1, 3)
                     sleep(sleep_time)
                     action_list.append(orders['les'])
@@ -436,7 +439,7 @@ def parse_text(text, username, message_id):
                     if gold >= 5 and uroven >= 5:
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
-                        action_list.append(orders['zamok'])
+                        action_list.append(orders['castle_menu'])
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                         action_list.append(orders['arena'])
@@ -483,8 +486,8 @@ def parse_text(text, username, message_id):
 
 
     elif username == trade_bot:
-        if text.find('Твой склад с материалами:') != -1:
-
+        if text.find('Твой склад с материалами:') != -1 and time() - lt_tradebot_send > 5:
+            lt_tradebot_send = time()
             m = re.search('/add_100   Нитки x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_100 '+str(m.group(1)))
@@ -607,6 +610,10 @@ def parse_text(text, username, message_id):
                 update_order(orders['yellow'])
             elif text.find(orders['blue']) != -1:
                 update_order(orders['blue'])
+            elif text.find(orders['mint']) != -1:
+                update_order(orders['mint'])
+            elif text.find(orders['twilight']) != -1:
+                update_order(orders['twilight'])
             elif text.find('🌲') != -1:
                 update_order(orders['lesnoi_fort'])
             elif text.find('⛰') != -1:
@@ -845,6 +852,10 @@ def hero_castle(heroinf):
         return 'black'
     elif heroinf.find(orders['white']) != -1:
         return 'white'
+    elif heroinf.find(orders['mint']) != -1:
+        return 'mint'
+    elif heroinf.find(orders['twilight']) != -1:
+        return 'twilight'
 
 def update_order(order):
     current_order['order'] = order
