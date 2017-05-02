@@ -42,9 +42,6 @@ host = 'localhost'
 # порт по которому слушать
 port = 1337
 
-# имя группы
-group_name = ''
-
 opts, args = getopt(sys.argv[1:], 'a:o:c:s:h:p', ['admin=', 'order=', 'castle=', 'socket=', 'host=', 'port='])
 
 for opt, arg in opts:
@@ -158,7 +155,7 @@ def work_with_message(receiver):
             if msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['sender']['peer_id'] == 777000:
                 kod = int(re.search('Your login code: ([0-9]+)', msg['text']).group(1))
-                send_msg('@', admin_username, str(kod*2))
+                send_msg(admin_username, str(kod*2))
             elif msg['event'] == 'message' and 'text' in msg and msg['peer'] is not None \
                     and msg['date'] is not None:
                 if (time() - msg['date']) < 20:
@@ -181,12 +178,12 @@ def queue_worker():
     sender.dialog_list()
     sleep(2)
     try:
-        send_msg(pref, msg_receiver, "Привет Командир! Для начала нажми команду #help")
+        send_msg(admin_username, "Привет Командир! Для начала нажми команду #help")
     except Exception as err:
         print('Ошибка отправки Привет Командир')
         sys.exit()
     try:
-        send_msg('@', captcha_bot, "/start")
+        send_msg(captcha_bot, "/start")
     except Exception as err:
         print('Ошибка отправки /start captcha_bot')
         sys.exit()
@@ -201,12 +198,12 @@ def queue_worker():
                 lt_info = time()
                 get_info_diff = random.randint(550, 650)
                 if bot_enabled:
-                    send_msg('@', bot_username, orders['hero'])
+                    send_msg(bot_username, orders['hero'])
                 continue
 
             if len(action_list):
                 log('Отправляем ' + action_list[0])
-                send_msg('@', bot_username, action_list.popleft())
+                send_msg(bot_username, action_list.popleft())
             sleep_time = random.randint(1, 3)
             sleep(sleep_time)
         except Exception as err:
@@ -237,26 +234,26 @@ def parse_text(text, username, message_id):
 
         if "На выходе из замка охрана никого не пропускает" in text:
             action_list.clear()
-            #send_msg('@', admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
-            #fwd('@', admin_username, message_id)
+            #send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
+            #fwd(admin_username, message_id)
             last_captcha_id = message_id
-            fwd('@', captcha_bot, message_id)
+            fwd(captcha_bot, message_id)
             bot_enabled = False
 
         elif 'Не умничай!' in text or 'Ты долго думал, аж вспотел' in text or 'Не шути со стражниками' in text:
-            send_msg('@', admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
+            send_msg(admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
             bot_enabled = False
             if last_captcha_id != 0:
-                fwd('@', admin_username, last_captcha_id)
+                fwd(admin_username, last_captcha_id)
             else:
-                send_msg('@', admin_username, 'Капча не найдена?')
+                send_msg(admin_username, 'Капча не найдена?')
 
         elif 'Ты слишком устал, возвращайся когда отдохнешь.' in text:
-            send_msg('@', admin_username, "Не угадали с капчей, вырубаю бота")
+            send_msg(admin_username, "Не угадали с капчей, вырубаю бота")
             bot_enabled = False
 
         elif 'Ты ответил правильно' in text:
-            #send_msg('@', admin_username, "Ура, угадали капчу! Запускаю бота")
+            #send_msg(admin_username, "Ура, угадали капчу! Запускаю бота")
             bot_enabled = True
 
         elif "Выбери замок, за который ты будешь сражаться" in text:
@@ -402,15 +399,15 @@ def parse_text(text, username, message_id):
                         log('15 Уровень Нужно выбрать специализацию')
                         # Можно сделать кузнеца, но зачем :)
                         action_list.append('📦 Добытчик')
-                        send_msg(pref, msg_receiver, '15 Уровень. Теперь я настоящий 📦 Добытчик')
+                        send_msg(admin_username, '15 Уровень. Теперь я настоящий 📦 Добытчик')
                     if 19 < uroven < 25:
                         log('20 Уровень Нужно выбрать специализацию')
                         action_list.append('📚 Обучение')
-                        send_msg(pref, msg_receiver, '20 Уровень')
+                        send_msg(admin_username, '20 Уровень')
                     if 24 < uroven < 30:
                         log('25 Уровень Нужно выбрать специализацию')
                         #action_list.append('📚 Обучение')
-                        send_msg('@', admin_username, '25 Уровень. Нужно глянуть')
+                        send_msg(admin_username, '25 Уровень. Нужно глянуть')
 
 
                 # Грабить корованы
@@ -471,10 +468,10 @@ def parse_text(text, username, message_id):
 
             elif text.find('Содержимое склада') != -1 and not text.find('На верстаке лежит') != -1 \
                     and not text.find('пусто') != -1:
-                fwd(pref, msg_receiver, message_id)
+                fwd(admin_username, message_id)
             elif (text.find('Снаряжение на складе') != -1 or text.find('Материалы для мастерской') != -1 or \
                     text.find('Другое:') != -1) and not (text.find('пусто') != -1):
-                fwd(pref, msg_receiver, message_id)
+                fwd(admin_username, message_id)
 
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
@@ -494,111 +491,111 @@ def parse_text(text, username, message_id):
             lt_tradebot_send = time()
             m = re.search('/add_100   Нитки x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_100 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_100 '+str(m.group(1)))
 
             m = re.search('/add_101   Ветки x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_101 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_101 '+str(m.group(1)))
 
             m = re.search('/add_102   Шкура животного x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_102 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_102 '+str(m.group(1)))
 
             m = re.search('/add_103   Кость животного x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_103 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_103 '+str(m.group(1)))
 
             m = re.search('/add_104   Уголь x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_104 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_104 '+str(m.group(1)))
 
             m = re.search('/add_105   Древесный уголь x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_105 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_105 '+str(m.group(1)))
 
             m = re.search('/add_106   Порошок x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_106 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_106 '+str(m.group(1)))
 
             m = re.search('/add_107   Железная руда x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_107 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_107 '+str(m.group(1)))
 
             m = re.search('/add_108   Плотная ткань x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_108 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_108 '+str(m.group(1)))
 
             m = re.search('/add_109   Серебряная руда x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_109 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_109 '+str(m.group(1)))
 
             m = re.search('/add_110   Алюминиевая руда x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_110 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_110 '+str(m.group(1)))
 
             m = re.search('/add_111   Мифриловая руда x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_111 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_111 '+str(m.group(1)))
 
             m = re.search('/add_112   Философский камень x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_112 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_112 '+str(m.group(1)))
 
             m = re.search('/add_113   Адамантитовая руда x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_113 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_113 '+str(m.group(1)))
 
             m = re.search('/add_114   Сапфир x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_114 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_114 '+str(m.group(1)))
 
             m = re.search('/add_115   Растворитель x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_115 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_115 '+str(m.group(1)))
 
             m = re.search('/add_116   Рубин x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_116 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_116 '+str(m.group(1)))
 
             m = re.search('/add_117   Загуститель x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_117 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_117 '+str(m.group(1)))
 
             m = re.search('/add_118   Сталь x  ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_118 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_118 '+str(m.group(1)))
 
             m = re.search('/add_119   Кожа x  ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_119 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_119 '+str(m.group(1)))
 
             m = re.search('/add_120   Костяная пудра x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_120 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_120 '+str(m.group(1)))
 
             m = re.search('/add_121   Веревка x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_121 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_121 '+str(m.group(1)))
 
             m = re.search('/add_122   Кокс x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_122 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_122 '+str(m.group(1)))
 
             m = re.search('/add_123   Очищенная пудра x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_123 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_123 '+str(m.group(1)))
 
             m = re.search('/add_128   Стальная нить x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_128 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_128 '+str(m.group(1)))
 
             m = re.search('/add_166   Обломок кирки шахтеров x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_166 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_166 '+str(m.group(1)))
 
             m = re.search('/add_169   Рецепт кирки шахтеров x ([0-9]+)', text)
             if m:
-                send_msg('@', trade_bot, '/add_169 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_169 '+str(m.group(1)))
 
 
     else:
@@ -624,7 +621,7 @@ def parse_text(text, username, message_id):
                 update_order(orders['gorni_fort'])
             elif text.find('🛡') != -1:
                 update_order(castle)
-            send_msg(pref, msg_receiver, 'Получили команду ' + current_order['order'] + ' от ' + username)
+            send_msg(admin_username, 'Получили команду ' + current_order['order'] + ' от ' + username)
 
         if username == admin_username:
             if text == '#help':
@@ -665,7 +662,7 @@ def parse_text(text, username, message_id):
             elif text == '#enable_bot':
                 bot_enabled = True
                 send_msg(pref, msg_receiver, 'Бот успешно включен')
-                send_msg('@', bot_username, orders['hero'])
+                send_msg(bot_username, orders['hero'])
 
             elif text == '#disable_bot':
                 bot_enabled = False
@@ -682,10 +679,10 @@ def parse_text(text, username, message_id):
             # Вкл/выкл таверны
             elif text == '#enable_taverna':
                 taverna_enabled = True
-                send_msg(pref, msg_receiver, 'Таверна успешно включена')
+                send_msg(admin_username, 'Таверна успешно включена')
             elif text == '#disable_taverna':
                 taverna_enabled = False
-                send_msg(pref, msg_receiver, 'Таверна успешно выключена')
+                send_msg(admin_username, 'Таверна успешно выключена')
 
             # Вкл/выкл леса
             elif text == '#enable_les':
@@ -698,18 +695,18 @@ def parse_text(text, username, message_id):
             # Вкл/выкл пещеры
             elif text == '#enable_peshera':
                 peshera_enabled = True
-                send_msg(pref, msg_receiver, 'Пещеры успешно включены')
+                send_msg(pref, msg_receiver, 'Пещера успешно включена')
             elif text == '#disable_peshera':
                 peshera_enabled = False
-                send_msg(pref, msg_receiver, 'Пещеры успешно выключены')
+                send_msg(pref, msg_receiver, 'Пещера успешно выключена')
 
             # Вкл/выкл грабить корованы
             elif text == '#enable_grabit':
                 grabit_enabled = True
-                send_msg(pref, msg_receiver, 'Грабить корованы включено')
+                send_msg(admin_username, 'Грабить корованы включено')
             elif text == '#disable_grabit':
                 grabit_enabled = False
-                send_msg(pref, msg_receiver, 'Грабить корованы выключено')
+                send_msg(admin_username, 'Грабить корованы выключено')
                 
             # Вкл/выкл Останавливать корованы
             elif text == '#enable_corovan':
@@ -805,9 +802,9 @@ def parse_text(text, username, message_id):
                 command = text.split(' ')[1]
                 if command in orders:
                     update_order(orders[command])
-                    send_msg(pref, msg_receiver, 'Команда ' + command + ' применена')
+                    send_msg(admin_username, 'Команда ' + command + ' применена')
                 else:
-                    send_msg(pref, msg_receiver, 'Команда ' + command + ' не распознана')
+                    send_msg(admin_username, 'Команда ' + command + ' не распознана')
 
             elif text.startswith('#captcha'):
                 command = text.split(' ')[1]
@@ -825,8 +822,8 @@ def send_msg(pref, to, message):
     sender.send_msg(pref + to, message)
 
 
-def fwd(pref, to, message_id):
-    sender.fwd(pref + to, message_id)
+def fwd(to, message_id):
+    sender.fwd('@' + to, message_id)
 
 def time_for_battle(tektime):
     battletime = False
