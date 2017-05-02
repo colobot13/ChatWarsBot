@@ -618,7 +618,7 @@ def parse_text(text, username, message_id):
 
         if username == admin_username:
             if text == '#help':
-                send_msg(pref, msg_receiver, '\n'.join([
+                send_msg(admin_username, '\n'.join([
                     '#enable_bot - Включить бота',
                     '#disable_bot - Выключить бота',
                     '#enable_arena - Включить арену',
@@ -654,20 +654,20 @@ def parse_text(text, username, message_id):
             # Вкл/выкл бота
             elif text == '#enable_bot':
                 bot_enabled = True
-                send_msg(pref, msg_receiver, 'Бот успешно включен')
+                send_msg(admin_username, 'Бот успешно включен')
                 send_msg(bot_username, orders['hero'])
 
             elif text == '#disable_bot':
                 bot_enabled = False
-                send_msg(pref, msg_receiver, 'Бот успешно выключен')
+                send_msg(admin_username, 'Бот успешно выключен')
 
             # Вкл/выкл арены
             elif text == '#enable_arena':
                 arena_enabled = True
-                send_msg(pref, msg_receiver, 'Арена успешно включена')
+                send_msg(admin_username, 'Арена успешно включена')
             elif text == '#disable_arena':
                 arena_enabled = False
-                send_msg(pref, msg_receiver, 'Арена успешно выключена')
+                send_msg(admin_username, 'Арена успешно выключена')
 
             # Вкл/выкл таверны
             elif text == '#enable_taverna':
@@ -680,18 +680,18 @@ def parse_text(text, username, message_id):
             # Вкл/выкл леса
             elif text == '#enable_les':
                 les_enabled = True
-                send_msg(pref, msg_receiver, 'Лес успешно включен')
+                send_msg(admin_username, 'Лес успешно включен')
             elif text == '#disable_les':
                 les_enabled = False
-                send_msg(pref, msg_receiver, 'Лес успешно выключен')
+                send_msg(admin_username, 'Лес успешно выключен')
 
             # Вкл/выкл пещеры
             elif text == '#enable_peshera':
                 peshera_enabled = True
-                send_msg(pref, msg_receiver, 'Пещера успешно включена')
+                send_msg(admin_username, 'Пещера успешно включена')
             elif text == '#disable_peshera':
                 peshera_enabled = False
-                send_msg(pref, msg_receiver, 'Пещера успешно выключена')
+                send_msg(admin_username, 'Пещера успешно выключена')
 
             # Вкл/выкл грабить корованы
             elif text == '#enable_grabit':
@@ -704,34 +704,34 @@ def parse_text(text, username, message_id):
             # Вкл/выкл Останавливать корованы
             elif text == '#enable_corovan':
                 corovan_enabled = True
-                send_msg(pref, msg_receiver, 'Останавливать корованы успешно включено')
+                send_msg(admin_username, 'Останавливать корованы успешно включено')
             elif text == '#disable_corovan':
                 corovan_enabled = False
-                send_msg(pref, msg_receiver, 'Останавливать корованы успешно выключено')
+                send_msg(admin_username, 'Останавливать корованы успешно выключено')
 
             # Вкл/выкл команд
             elif text == '#enable_order':
                 order_enabled = True
-                send_msg(pref, msg_receiver, 'Приказы успешно включены')
+                send_msg(admin_username, 'Приказы успешно включены')
             elif text == '#disable_order':
                 order_enabled = False
-                send_msg(pref, msg_receiver, 'Приказы успешно выключены')
+                send_msg(admin_username, 'Приказы успешно выключены')
 
             # Вкл/выкл авто деф
             elif text == '#enable_auto_def':
                 auto_def_enabled = True
-                send_msg(pref, msg_receiver, 'Авто деф успешно включен')
+                send_msg(admin_username, 'Авто деф успешно включен')
             elif text == '#disable_auto_def':
                 auto_def_enabled = False
-                send_msg(pref, msg_receiver, 'Авто деф успешно выключен')
+                send_msg(admin_username, 'Авто деф успешно выключен')
 
             # Вкл/выкл авто донат
             elif text == '#enable_donate':
                 donate_enabled = True
-                send_msg(pref, msg_receiver, 'Донат успешно включен')
+                send_msg(admin_username, 'Донат успешно включен')
             elif text == '#disable_donate':
                 donate_enabled = False
-                send_msg(pref, msg_receiver, 'Донат успешно выключен')
+                send_msg(admin_username, 'Донат успешно выключен')
 
             elif text == '#update_stock':
                 action_list.append('/stock')
@@ -765,31 +765,31 @@ def parse_text(text, username, message_id):
             # Информация о герое
             elif text == '#hero':
                 if hero_message_id == 0:
-                    send_msg(pref, msg_receiver, 'Информация о герое пока еще недоступна')
+                    send_msg(admin_username, 'Информация о герое пока еще недоступна')
                 else:
-                    fwd(pref, msg_receiver, hero_message_id)
+                    fwd(admin_username, hero_message_id)
 
             # Получить лог
             elif text == '#log':
-                send_msg(pref, msg_receiver, '\n'.join(log_list))
+                send_msg(admin_username, '\n'.join(log_list))
                 log_list.clear()
 
             elif text == '#lt_arena':
-                send_msg(pref, msg_receiver, str(dt.datetime.fromtimestamp(lt_arena).time()))
+                send_msg(admin_username, str(dt.datetime.fromtimestamp(lt_arena).time()))
 
             elif text == '#order':
                 text_date = str(dt.datetime.fromtimestamp(current_order['time']).time())
-                send_msg(pref, msg_receiver, current_order['order'] + ' ' + text_date)
+                send_msg(admin_username, current_order['order'] + ' ' + text_date)
 
             elif text == '#time':
                 text_date = str(dt.datetime.now().time())
-                send_msg(pref, msg_receiver, text_date)
+                send_msg(admin_username, text_date)
 
             elif text == '#ping':
-                send_msg(pref, msg_receiver, '#pong')
+                send_msg(admin_username, '#pong')
 
             elif text == '#get_info_diff':
-                send_msg(pref, msg_receiver, str(get_info_diff))
+                send_msg(admin_username, str(get_info_diff))
 
             elif text.startswith('#push_order'):
                 command = text.split(' ')[1]
@@ -805,9 +805,9 @@ def parse_text(text, username, message_id):
                     action_list.clear()
                     action_list.append(captcha_answers[command])
                     bot_enabled = True
-                    send_msg('@', admin_username, 'Команда ' + command + ' применена')
+                    send_msg(admin_username, 'Команда ' + command + ' применена')
                 else:
-                    send_msg('@', admin_username, 'Команда ' + command + ' не распознана')
+                    send_msg(admin_username, 'Команда ' + command + ' не распознана')
 
 
 def send_msg(to, message):
