@@ -810,9 +810,9 @@ def parse_text(text, username, message_id):
                     send_msg('@', admin_username, 'Команда ' + command + ' не распознана')
 
 
-def send_msg(pref, to, message):
+def send_msg(to, message):
     sender.mark_read('@' + to)
-    sender.send_msg(pref + to, message)
+    sender.send_msg('@' + to, message)
 
 
 def fwd(to, message_id):
