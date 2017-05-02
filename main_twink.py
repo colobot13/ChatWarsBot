@@ -240,7 +240,7 @@ def parse_text(text, username, message_id):
             #send_msg('@', admin_username, "Командир, у нас проблемы с капчой! #captcha " + '|'.join(captcha_answers.keys()))
             #fwd('@', admin_username, message_id)
             last_captcha_id = message_id
-            fwd(captcha_bot, message_id)
+            fwd('@', captcha_bot, message_id)
             bot_enabled = False
 
         elif 'Не умничай!' in text or 'Ты долго думал, аж вспотел' in text or 'Не шути со стражниками' in text:
@@ -471,10 +471,10 @@ def parse_text(text, username, message_id):
 
             elif text.find('Содержимое склада') != -1 and not text.find('На верстаке лежит') != -1 \
                     and not text.find('пусто') != -1:
-                fwd(admin_username, message_id)
+                fwd(pref, msg_receiver, message_id)
             elif (text.find('Снаряжение на складе') != -1 or text.find('Материалы для мастерской') != -1 or \
                     text.find('Другое:') != -1) and not (text.find('пусто') != -1):
-                fwd(admin_username, message_id)
+                fwd(pref, msg_receiver, message_id)
 
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
