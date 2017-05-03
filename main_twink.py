@@ -476,116 +476,150 @@ def parse_text(text, username, message_id):
 
 
     elif username == trade_bot:
+        log('Получили сообщение от тогового бота.')
         if text.find('Твой склад с материалами:') != -1 and time() - lt_tradebot_send > 5:
+
             lt_tradebot_send = time()
-            m = re.search('/add_100   Нитки x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_100 '+str(m.group(1)))
 
-            m = re.search('/add_101   Ветки x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_101 '+str(m.group(1)))
+            #m = re.search('/add_101   Нитки x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_101 '+str(m.group(1)))
 
-            m = re.search('/add_102   Шкура животного x ([0-9]+)', text)
+            m = re.search('/add_102   Ветки x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_102 '+str(m.group(1)))
 
-            m = re.search('/add_103   Кость животного x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_103 '+str(m.group(1)))
+            #m = re.search('/add_103   Шкура животного x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_103 '+str(m.group(1)))
 
-            m = re.search('/add_104   Уголь x ([0-9]+)', text)
+            m = re.search('/add_104   Кость животного x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_104 '+str(m.group(1)))
 
-            m = re.search('/add_105   Древесный уголь x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_105 '+str(m.group(1)))
+            #m = re.search('/add_105   Уголь x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_105 '+str(m.group(1)))
 
-            m = re.search('/add_106   Порошок x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_106 '+str(m.group(1)))
+            #m = re.search('/add_106   Древесный уголь x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_106 '+str(m.group(1)))
 
-            m = re.search('/add_107   Железная руда x ([0-9]+)', text)
+            m = re.search('/add_107   Порошок x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_107 '+str(m.group(1)))
 
-            m = re.search('/add_108   Плотная ткань x ([0-9]+)', text)
+            m = re.search('/add_108   Железная руда x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_108 '+str(m.group(1)))
 
-            m = re.search('/add_109   Серебряная руда x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_109 '+str(m.group(1)))
+            #m = re.search('/add_109   Плотная ткань x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_109 '+str(m.group(1)))
 
-            m = re.search('/add_110   Алюминиевая руда x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_110 '+str(m.group(1)))
+            #m = re.search('/add_110   Серебряная руда x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_110 '+str(m.group(1)))
 
-            m = re.search('/add_111   Мифриловая руда x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_111 '+str(m.group(1)))
+            #m = re.search('/add_111   Алюминиевая руда x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_111 '+str(m.group(1)))
 
-            m = re.search('/add_112   Философский камень x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_112 '+str(m.group(1)))
+            #m = re.search('/add_112   Мифриловая руда x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_112 '+str(m.group(1)))
 
-            m = re.search('/add_113   Адамантитовая руда x ([0-9]+)', text)
+            m = re.search('/add_113   Философский камень x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_113 '+str(m.group(1)))
 
-            m = re.search('/add_114   Сапфир x ([0-9]+)', text)
-            if m:
-                send_msg(trade_bot, '/add_114 '+str(m.group(1)))
+            #m = re.search('/add_114   Адамантитовая руда x ([0-9]+)', text)
+            #if m:
+            #    send_msg(trade_bot, '/add_114 '+str(m.group(1)))
 
-            m = re.search('/add_115   Растворитель x ([0-9]+)', text)
+            m = re.search('/add_115   Сапфир x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_115 '+str(m.group(1)))
 
-            m = re.search('/add_116   Рубин x ([0-9]+)', text)
+            m = re.search('/add_116   Растворитель x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_116 '+str(m.group(1)))
 
-            m = re.search('/add_117   Загуститель x ([0-9]+)', text)
+            m = re.search('/add_117   Рубин x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_117 '+str(m.group(1)))
 
-            m = re.search('/add_118   Сталь x  ([0-9]+)', text)
+            m = re.search('/add_118   Загуститель x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_118 '+str(m.group(1)))
 
-            m = re.search('/add_119   Кожа x  ([0-9]+)', text)
+            m = re.search('/add_119   Сталь x  ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_119 '+str(m.group(1)))
 
-            m = re.search('/add_120   Костяная пудра x ([0-9]+)', text)
+            m = re.search('/add_120   Кожа x  ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_120 '+str(m.group(1)))
 
-            m = re.search('/add_121   Веревка x ([0-9]+)', text)
+            m = re.search('/add_121   Костяная пудра x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_121 '+str(m.group(1)))
 
-            m = re.search('/add_122   Кокс x ([0-9]+)', text)
+            m = re.search('/add_122   Веревка x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_122 '+str(m.group(1)))
 
-            m = re.search('/add_123   Очищенная пудра x ([0-9]+)', text)
+            m = re.search('/add_123   Кокс x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_123 '+str(m.group(1)))
 
-            m = re.search('/add_128   Стальная нить x ([0-9]+)', text)
+            m = re.search('/add_124   Очищенная пудра x ([0-9]+)', text)
             if m:
-                send_msg(trade_bot, '/add_128 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_124 '+str(m.group(1)))
 
-            m = re.search('/add_166   Обломок кирки шахтеров x ([0-9]+)', text)
+            m = re.search('/add_129   Стальная нить x ([0-9]+)', text)
             if m:
-                send_msg(trade_bot, '/add_166 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_129 '+str(m.group(1)))
 
-            m = re.search('/add_169   Рецепт кирки шахтеров x ([0-9]+)', text)
+            m = re.search('/add_131   Обработанная кожа x ([0-9]+)', text)
             if m:
-                send_msg(trade_bot, '/add_169 '+str(m.group(1)))
+                send_msg(trade_bot, '/add_131 '+str(m.group(1)))
 
+            m = re.search('/add_141   Пыль x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_141 '+str(m.group(1)))
+
+            m = re.search('/add_135   Сено x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_135 '+str(m.group(1)))
+
+            m = re.search('/add_136   Комбикорм x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_136 '+str(m.group(1)))
+
+            m = re.search('/add_137   Зерно x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_137 '+str(m.group(1)))
+
+            m = re.search('/add_167   Обломок кирки шахтеров x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_167 '+str(m.group(1)))
+
+            m = re.search('/add_170   Рецепт кирки шахтеров x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_170 '+str(m.group(1)))
+
+            m = re.search('/add_1413   🥉Бронзовая медаль 1го сезона x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_1413 '+str(m.group(1)))
+
+            m = re.search('/add_1411   🥇Золотая медаль 1го сезона x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_1411 '+str(m.group(1)))
+
+            m = re.search('/add_1414   🏅Орден выжившего 1го сезона x ([0-9]+)', text)
+            if m:
+                send_msg(trade_bot, '/add_1414 '+str(m.group(1)))
 
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
