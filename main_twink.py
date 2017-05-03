@@ -316,17 +316,17 @@ def parse_text(text, username, message_id):
 
             # Если битва во вот начнется то пока ничего не далаем
             # Здесь нужно добавить проверку на установку дефа или атаку
-            elif text.find('Битва пяти замков через несколько секунд!') != -1:
+            elif text.find('Битва семи замков через несколько секунд!') != -1:
                 lt_info = time()
                 return
 
-            elif text.find('Битва пяти замков через') != -1:
+            elif text.find('Битва семи замков через') != -1:
                 lt_info = time()
 
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
-                m = re.search('Битва пяти замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
+                m = re.search('Битва семи замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
                     if m.group(2) and int(m.group(2)) <= 30:
