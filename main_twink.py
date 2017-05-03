@@ -553,7 +553,7 @@ def parse_text(text, username, message_id):
             if m:
                 send_msg(trade_bot, '/add_118 '+str(m.group(1)))
 
-            m = re.search('/add_119   Сталь x  ([0-9]+)', text)
+            m = re.search('/add_119   Сталь x ([0-9]+)', text)
             if m:
                 send_msg(trade_bot, '/add_119 '+str(m.group(1)))
 
