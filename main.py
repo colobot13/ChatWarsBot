@@ -414,11 +414,11 @@ def parse_text(text, username, message_id):
             elif text.find('🛁') != -1 and text.find('🍼') != -1:
                 lt_pet_info = time()
                 #if not text.find('⚽️ отлично!') != -1:
-                action_list.append('⚽️Поиграть')
+                #    action_list.append('⚽️Поиграть')
                 if not text.find('🍼 отлично!') != -1:
                     action_list.append('🍼Покормить')
-                #if not text.find('🛁 отлично!') != -1:
-                action_list.append('🛁Почистить')
+                if not text.find('🛁 отлично!') != -1:
+                    action_list.append('🛁Почистить')
                 action_list.append('⬅️Назад')
 
             # Здесь нужно все прописать на что не реагировать   
