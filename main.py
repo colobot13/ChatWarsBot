@@ -367,7 +367,6 @@ def parse_text(text, username, message_id):
                 elif pet_enabled and time() - lt_pet_info > 3600:
                     action_list.append('/pet')
 
-
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
                 lt_arena = time()
                 attack_chosen = arena_attack[random.randint(0, 2)]
@@ -405,7 +404,7 @@ def parse_text(text, username, message_id):
             elif text.find('Твои результаты в бою:') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
-                    
+
             # Оправим Топ игроков
             elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
                 if castle_name == 'blue':
@@ -415,11 +414,12 @@ def parse_text(text, username, message_id):
             elif text.find('🛁') != -1 and text.find('🍼') != -1:
                 lt_pet_info = time()
                 #if not text.find('⚽️ отлично!') != -1:
-                #    action_list.append('⚽️Поиграть')
+                action_list.append('⚽️Поиграть')
                 if not text.find('🍼 отлично!') != -1:
                     action_list.append('🍼Покормить')
-                if not text.find('🛁 отлично!') != -1:
-                    action_list.append('🛁Почистить')
+                #if not text.find('🛁 отлично!') != -1:
+                action_list.append('🛁Почистить')
+                action_list.append('⬅️Назад')
 
             # Здесь нужно все прописать на что не реагировать   
             # elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
@@ -435,7 +435,7 @@ def parse_text(text, username, message_id):
             action_list.clear()
             action_list.append(text)
             bot_enabled = True
-            
+
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
                 not text.find('Топы отряда') != -1 and len(text) <= 200 and time_for_orders(dt.datetime.now().time()):
