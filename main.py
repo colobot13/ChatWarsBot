@@ -125,6 +125,8 @@ get_info_diff = 600
 hero_message_id = 0
 last_captcha_id = 0
 
+pet_enabled = 0
+
 bot_enabled = True
 arena_enabled = True
 taverna_enabled = False
@@ -137,6 +139,8 @@ donate_enabled = False
 grabit_enabled = False
 
 lt_tradebot_send = 0
+
+lt_pet_info = 0
 
 @coroutine
 def work_with_message(receiver):
@@ -222,6 +226,8 @@ def parse_text(text, username, message_id):
     global castle_name
     global castle
     global lt_tradebot_send
+    global pet_enabled
+    global lt_pet_info
     if username == bot_username:
         log('Получили сообщение от бота.')
 
@@ -265,10 +271,11 @@ def parse_text(text, username, message_id):
 
             elif text.find('Битва семи замков через') != -1:
                 lt_info = time()
-
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
+                if text.find('Питомец') != -1:
+                    pet_enabled = True
                 m = re.search('Битва семи замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
@@ -356,6 +363,11 @@ def parse_text(text, username, message_id):
                         (dt.datetime.now().time() >= dt.time(23) or dt.datetime.now().time() < dt.time(10)):
                     action_list.append(orders['taverna'])
 
+                #  Присмотрим за зверьем
+                elif pet_enabled and time() - lt_pet_info > 3600:
+                    action_list.append('/pet')
+
+
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
                 lt_arena = time()
                 attack_chosen = arena_attack[random.randint(0, 2)]
@@ -398,6 +410,16 @@ def parse_text(text, username, message_id):
             elif text.find('Топ игроков') != -1 and not text.find('/top') != -1:  
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
+
+            #  присмотрим за питомцем
+            elif text.find('🛁') != -1 and text.find('🍼') != -1:
+                lt_pet_info = time()
+                if not text.find('⚽️ отлично!') != -1:
+                    action_list.append('⚽️Поиграть')
+                if not text.find('🍼 отлично!') != -1:
+                    action_list.append('🍼Покормить')
+                if not text.find('🛁 отлично!') != -1:
+                    action_list.append('🛁Почистить')
 
 
             # Здесь нужно все прописать на что не реагировать   
