@@ -414,34 +414,20 @@ def parse_text(text, username, message_id):
             #  присмотрим за питомцем
             elif text.find('🛁') != -1 and text.find('🍼') != -1:
                 lt_pet_info = time()
-                if not text.find('⚽️ отлично!') != -1:
-                    action_list.append('⚽️Поиграть')
+                #if not text.find('⚽️ отлично!') != -1:
+                #    action_list.append('⚽️Поиграть')
                 if not text.find('🍼 отлично!') != -1:
                     action_list.append('🍼Покормить')
                 if not text.find('🛁 отлично!') != -1:
                     action_list.append('🛁Почистить')
 
-
             # Здесь нужно все прописать на что не реагировать   
-            #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
+            # elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
             #                "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
             #                "Соперник найден" not in text and "Синий замок" not in text and \
             #                "Синего замка" not in text and "Общение внутри замка" not in text and \
             #                "Победил воин" not in text and "shop" not in text and \
             #                not re.findall(r'\bнанес\b(.*)\bудар\b', text):
-                                
-                # Пока уберу                
-                #with open('taverna.txt', 'a+') as f:
-                #    f.seek(0)
-                #    for line in f:
-                #        if text[0:8] in line:
-                #            break
-                #    else:
-                #        f.write(text + '\n')
-                
-                # Уберу пока режим полуавтоматический
-                #action_list.append(orders['hero'])
-
 
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
@@ -604,7 +590,6 @@ def parse_text(text, username, message_id):
                 sleep(sleep_time)
                 action_list.append('🗃Другое')
 
-
             # Получить статус
             elif text == '#status':
                 send_msg(admin_username, '\n'.join([
@@ -673,7 +658,6 @@ def send_msg(to, message):
     sender.mark_read('@' + to)
     sender.send_msg('@' + to, message)
 
-
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
@@ -736,7 +720,6 @@ def log(text):
     message = '{0:%Y-%m-%d %H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
     print(message)
     log_list.append(message)
-
 
 if __name__ == '__main__':
     receiver = Receiver(sock=socket_path) if socket_path else Receiver(port=port)
