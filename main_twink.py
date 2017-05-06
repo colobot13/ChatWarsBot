@@ -249,9 +249,6 @@ def parse_text(text, username, message_id):
             #send_msg(admin_username, "Ура, угадали капчу! Запускаю бота")
             bot_enabled = True
 
-        elif "Выбери замок, за который ты будешь сражаться" in text:
-            action_list.append('🇪🇺Синий замок🇪🇺')
-
         elif "Привет, новобранец! А что же ты без меча пришел на доклад?" in text:
             action_list.append(orders['quests'])
             sleep_time = random.randint(1, 3)
@@ -368,9 +365,9 @@ def parse_text(text, username, message_id):
                     sleep(sleep_time)
                     log('level_up')
                     if damage > defence:
-                        action_list.append('+1 ⚔Атака')
-                    else:
                         action_list.append('+1 🛡Защита')
+                    else:
+                        action_list.append('+1 ⚔Атака')
 
                 elif text.find('Определись со специализацией. Жми /class') != -1 and '/class' not in action_list:
                     sleep_time = random.randint(1, 3)
@@ -386,18 +383,12 @@ def parse_text(text, username, message_id):
                         action_list.append('📚 Обучение')
                     if 14 < uroven < 20:
                         log('15 Уровень Нужно выбрать специализацию')
-                        # Можно сделать кузнеца, но зачем :)
                         action_list.append('📦 Добытчик')
                         send_msg(admin_username, '15 Уровень. Теперь я настоящий 📦 Добытчик')
-                    if 19 < uroven < 25:
-                        log('20 Уровень Нужно выбрать специализацию')
+                    if 20 < uroven:
+                        log('Нужно выбрать специализацию')
                         action_list.append('📚 Обучение')
-                        send_msg(admin_username, '20 Уровень')
-                    if 24 < uroven < 30:
-                        log('25 Уровень Нужно выбрать специализацию')
-                        #action_list.append('📚 Обучение')
-                        send_msg(admin_username, '25 Уровень. Нужно глянуть')
-
+                        #send_msg(admin_username, '25 Уровень')
 
                 # Грабить корованы
                 elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
@@ -464,6 +455,10 @@ def parse_text(text, username, message_id):
 
             elif text.find('Таблица победителей') != -1 and not text.find('Стоимость подачи заявки') != -1:
                 lt_arena = time()
+                if text.find('Поздравляем') != -1:
+                    log('Победа на 📯Арене')
+                if text.find('Не унывай') != -1:
+                    log('Проиграл на 📯Арене')
                 action_list.append(orders['hero'])
 
 
@@ -477,7 +472,7 @@ def parse_text(text, username, message_id):
 
     elif username == trade_bot:
         log('Получили сообщение от тогового бота.')
-        if text.find('Твой склад с материалами:') != -1 and time() - lt_tradebot_send > 5:
+        if bot_enabled and text.find('Твой склад с материалами:') != -1 and time() - lt_tradebot_send > 5:
 
             lt_tradebot_send = time()
 
