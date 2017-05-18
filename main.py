@@ -121,7 +121,7 @@ action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
 arena_closed = False
-get_info_diff = 600
+get_info_diff = 1200
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -193,7 +193,7 @@ def queue_worker():
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
                 lt_info = time()
-                get_info_diff = random.randint(550, 650)
+                get_info_diff = random.randint(1000, 1200)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
                 continue
