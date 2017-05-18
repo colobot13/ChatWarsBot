@@ -121,7 +121,7 @@ action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
 arena_closed = False
-get_info_diff = 600
+get_info_diff = 1200
 hero_message_id = 0
 last_captcha_id = 0
 
@@ -189,7 +189,7 @@ def queue_worker():
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
                 lt_info = time()
-                get_info_diff = random.randint(550, 650)
+                get_info_diff = random.randint(1000, 1200)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
                 continue
@@ -385,10 +385,10 @@ def parse_text(text, username, message_id):
                         log('15 Уровень Нужно выбрать специализацию')
                         action_list.append('📦 Добытчик')
                         send_msg(admin_username, '15 Уровень. Теперь я настоящий 📦 Добытчик')
-                    if 20 < uroven:
-                        log('Нужно выбрать специализацию')
+                    if uroven > 19:
+                        log('Нужно пройти обучение')
                         action_list.append('📚 Обучение')
-                        #send_msg(admin_username, '25 Уровень')
+                        send_msg(admin_username, str(uroven) + ' Уровень')
 
                 # Грабить корованы
                 elif grabit_enabled and endurance >= 2 and orders['grabit'] not in action_list:
