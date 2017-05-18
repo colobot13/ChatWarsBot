@@ -121,9 +121,11 @@ action_list = deque([])
 log_list = deque([], maxlen=30)
 lt_arena = 0
 arena_closed = False
-get_info_diff = 600
+get_info_diff = 1200
 hero_message_id = 0
 last_captcha_id = 0
+
+pet_enabled = 0
 
 bot_enabled = True
 arena_enabled = True
@@ -137,6 +139,8 @@ donate_enabled = False
 grabit_enabled = False
 
 lt_tradebot_send = 0
+
+lt_pet_info = 0
 
 @coroutine
 def work_with_message(receiver):
@@ -189,7 +193,7 @@ def queue_worker():
                                 dt.datetime.now().time() <= dt.time(13, 20):
                     arena_closed = False
                 lt_info = time()
-                get_info_diff = random.randint(550, 650)
+                get_info_diff = random.randint(1000, 1200)
                 if bot_enabled:
                     send_msg(bot_username, orders['hero'])
                 continue
@@ -222,6 +226,8 @@ def parse_text(text, username, message_id):
     global castle_name
     global castle
     global lt_tradebot_send
+    global pet_enabled
+    global lt_pet_info
     if username == bot_username:
         log('Получили сообщение от бота.')
 
@@ -265,10 +271,11 @@ def parse_text(text, username, message_id):
 
             elif text.find('Битва семи замков через') != -1:
                 lt_info = time()
-
                 hero_message_id = message_id
                 castle_name = hero_castle(text)
                 castle = orders[castle_name]
+                if text.find('Питомец') != -1:
+                    pet_enabled = True
                 m = re.search('Битва семи замков через(?: ([0-9]+)ч){0,1}(?: ([0-9]+)){0,1}', text)
                 state = re.search('Состояние:\\n(.*)\\n', text)
                 if not m.group(1):
@@ -356,6 +363,10 @@ def parse_text(text, username, message_id):
                         (dt.datetime.now().time() >= dt.time(23) or dt.datetime.now().time() < dt.time(10)):
                     action_list.append(orders['taverna'])
 
+                #  Присмотрим за зверьем
+                elif pet_enabled and time() - lt_pet_info > 3600:
+                    action_list.append('/pet')
+
             elif arena_enabled and text.find('выбери точку атаки и точку защиты') != -1:
                 lt_arena = time()
                 attack_chosen = arena_attack[random.randint(0, 2)]
@@ -375,28 +386,25 @@ def parse_text(text, username, message_id):
                 lt_arena = time()
                 action_list.append(orders['hero'])
 
+            #  присмотрим за питомцем
+            elif text.find('🛁') != -1 and text.find('🍼') != -1:
+                lt_pet_info = time()
+                #if not text.find('⚽️ отлично!') != -1:
+                #    action_list.append('⚽️Поиграть')
+                if not text.find('🍼 отлично!') != -1:
+                    action_list.append('🍼Покормить')
+                if not text.find('🛁 отлично!') != -1:
+                    action_list.append('🛁Почистить')
+                action_list.append('⬅️Назад')
 
             # Здесь нужно все прописать на что не реагировать   
-            #elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
+            # elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
             #                "Ты сейчас занят" not in text and "Ветер завывает" not in text and \
             #                "Соперник найден" not in text and "Синий замок" not in text and \
             #                "Синего замка" not in text and "Общение внутри замка" not in text and \
             #                "Победил воин" not in text and "shop" not in text and \
             #                not re.findall(r'\bнанес\b(.*)\bудар\b', text):
                                 
-                # Пока уберу                
-                #with open('taverna.txt', 'a+') as f:
-                #    f.seek(0)
-                #    for line in f:
-                #        if text[0:8] in line:
-                #            break
-                #    else:
-                #        f.write(text + '\n')
-                
-                # Уберу пока режим полуавтоматический
-                #action_list.append(orders['hero'])
-
-
     elif username == captcha_bot:
         if len(text) <= 4 and text in captcha_answers.values():
             sleep(3)
@@ -406,7 +414,7 @@ def parse_text(text, username, message_id):
             
     else:
         if bot_enabled and order_enabled and username in order_usernames and not text.find('Сводки с полей') != -1 and \
-                not text.find('Топы отряда') != -1 and len(text) <= 200:
+                not text.find('Топы отряда') != -1 and len(text) <= 200 and time_for_orders(dt.datetime.now().time()):
             if text.find(orders['red']) != -1:
                 update_order(orders['red'])
             elif text.find(orders['black']) != -1:
@@ -558,7 +566,6 @@ def parse_text(text, username, message_id):
                 sleep(sleep_time)
                 action_list.append('🗃Другое')
 
-
             # Получить статус
             elif text == '#status':
                 send_msg(admin_username, '\n'.join([
@@ -627,7 +634,6 @@ def send_msg(to, message):
     sender.mark_read('@' + to)
     sender.send_msg('@' + to, message)
 
-
 def fwd(to, message_id):
     sender.fwd('@' + to, message_id)
 
@@ -641,6 +647,17 @@ def time_for_battle(tektime):
             (dt.time(19, 40) <= tektime <= dt.time(20, 5)):
         battletime = True
     return battletime
+
+def time_for_orders(tektime):
+    orderstime = False
+    if (dt.time(23, 50) <=  tektime <= dt.time(0, 0)) or \
+            (dt.time(3, 50) <= tektime <= dt.time(4, 0)) or \
+            (dt.time(7, 50) <= tektime <= dt.time(8, 0)) or \
+            (dt.time(11, 50) <=  tektime <= dt.time(12, 0)) or \
+            (dt.time(15, 50) <= tektime <= dt.time(16, 0)) or \
+            (dt.time(19, 50) <= tektime <= dt.time(20, 0)):
+        orderstime = True
+    return orderstime
 
 def time_for_arena(tektime):
     arenatime = False
@@ -679,7 +696,6 @@ def log(text):
     message = '{0:%Y-%m-%d %H:%M:%S}'.format(dt.datetime.now()) + ' ' + text
     print(message)
     log_list.append(message)
-
 
 if __name__ == '__main__':
     receiver = Receiver(sock=socket_path) if socket_path else Receiver(port=port)
