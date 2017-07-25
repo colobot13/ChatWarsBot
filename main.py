@@ -80,7 +80,15 @@ orders = {
     'quests': '🗺 Квесты',
     'castle_menu': '🏰Замок',
     'arena': '📯Арена',
-    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ'
+    'lavka': '🏚Лавка',
+    'snaraga': 'Снаряжение',
+    'shlem': 'Шлем',
+    'sell': 'Скупка предметов',
+    'lvl_def': '+1 🛡Защита',
+    'lvl_atk': '+1 ⚔Атака',
+    'lvl_off': 'Выключен',
+    'grabit': '🐫ГРАБИТЬ КОРОВАНЫ',
+    'more':'🏝Побережье'
 }
 
 captcha_answers = {
@@ -109,6 +117,18 @@ states_map = {
     'korovan': '🐫Возишься с КОРОВАНАМИ'
 }
 
+builds = {
+    'stash': '/build_stash',
+    'sentries': '/build_sentries',
+    'monument': '/build_monument',
+    'warriors': '/build_warriors',
+    'teaparty': '/build_teaparty',
+    'hq': '/build_hq',
+    'gladiators': '/build_gladiators',
+    'wall': '/build_wall',
+    'ambar': '/build_ambar'
+}
+
 arena_cover = ['🛡головы', '🛡корпуса', '🛡ног']
 arena_attack = ['🗡в голову', '🗡по корпусу', '🗡по ногам']
 # поменять blue на red, black, white, yellow
@@ -132,10 +152,14 @@ arena_enabled = True
 taverna_enabled = False
 les_enabled = True
 peshera_enabled = False
+more_enabled = False
 corovan_enabled = True
 order_enabled = True
 auto_def_enabled = True
 donate_enabled = False
+quest_fight_enabled = True
+build_enabled = False
+build_target = '/build_hq'
 grabit_enabled = False
 
 lt_tradebot_send = 0
@@ -228,6 +252,11 @@ def parse_text(text, username, message_id):
     global lt_tradebot_send
     global pet_enabled
     global lt_pet_info
+    global quest_fight_enabled
+    global build_enabled
+    global build_target
+    global more_enabled
+    global get_info_diff
     if username == bot_username:
         log('Получили сообщение от бота.')
 
@@ -344,6 +373,13 @@ def parse_text(text, username, message_id):
                     sleep(sleep_time)
                     action_list.append(orders['les'])
 
+                # Море
+                elif more_enabled and not les_enabled and not peshera_enabled and endurance >= 2 and orders['more'] not in action_list:
+                    action_list.append(orders['quests'])
+                    sleep_time = random.randint(1, 3)
+                    sleep(sleep_time)
+                    action_list.append(orders['more'])
+
                 # Ходить на арену каждые 15 мин
                 elif arena_enabled and '🔎Поиск соперника' not in action_list and time() - lt_arena > 900 \
                         and not arena_closed:
@@ -357,6 +393,22 @@ def parse_text(text, username, message_id):
                         sleep_time = random.randint(1, 2)
                         sleep(sleep_time)
                         action_list.append('🔎Поиск соперника')
+
+                elif build_enabled:
+                    log('Пойдем строить')
+                    if random.randint(0, 1) == 0:
+                        action_list.append(build_target)
+                    else:
+                        action_list.append(orders['castle_menu'])
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
+                        action_list.append('🏘Постройки')
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
+                        action_list.append('🚧Стройка')
+                        sleep_time = random.randint(1, 2)
+                        sleep(sleep_time)
+                        action_list.append(build_target)
 
                 # Ходить в таверну
                 elif taverna_enabled and gold >= 20 and orders['taverna'] not in action_list and \
@@ -410,6 +462,17 @@ def parse_text(text, username, message_id):
                 if castle_name == 'blue':
                     fwd(oyster_bot, message_id)
 
+            elif 'Ты вернулся со стройки:' in text:
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
+
+            elif 'Ты пошел строить:' in text:
+                log("Ушли строить")
+                lt_info = time()
+
+            elif 'В казне недостаточно' in text:
+                log("Стройка не удалась, в замке нет денег")
+
             #  присмотрим за питомцем
             elif text.find('🛁') != -1 and text.find('🍼') != -1:
                 lt_pet_info = time()
@@ -420,6 +483,13 @@ def parse_text(text, username, message_id):
                 if not text.find('🛁 отлично!') != -1:
                     action_list.append('🛁Почистить')
                 action_list.append('⬅️Назад')
+
+            elif quest_fight_enabled and text.find('/fight') != -1:
+                c = re.search('(\/fight.*)', text).group(1)
+                action_list.append(c)
+                fwd(admin_username, message_id)
+                if castle_name == 'blue':
+                    fwd(oyster_bot, message_id)
 
             # Здесь нужно все прописать на что не реагировать   
             # elif "Хорошо!" not in text and "Хороший план" not in text and "5 минут" not in text and \
@@ -459,7 +529,11 @@ def parse_text(text, username, message_id):
                 update_order(orders['gorni_fort'])
             elif text.find('🛡') != -1:
                 update_order(castle)
-            send_msg(admin_username, 'Получили команду ' + current_order['order'] + ' от ' + username)
+            elif quest_fight_enabled and text.find('/fight') != -1:
+                c = re.search('(\/fight.*)', text).group(1)
+                action_list.append(c)
+
+         #  send_msg(admin_username, 'Получили команду ' + current_order['order'] + ' от ' + username)
 
         if username == admin_username:
             if text == '#help':
@@ -474,10 +548,14 @@ def parse_text(text, username, message_id):
                     '#disable_les - Выключить лес',
                     '#enable_peshera - Включить пещеры',
                     '#disable_peshera - Выключить пещеры',
+                    '#enable_more - Включить побережье',
+                    '#disable_more - Выключить побережье',
                     '#enable_grabit - Включить грабить корованы',
                     '#disable_grabit - Выключить грабить корованы',
                     '#enable_corovan - Включить останавливать корованы',
                     '#disable_corovan - Выключить останавливать корованы',
+                    '#enable_quest_fight - Включить битву во время квестов',
+                    '#disable_quest_fight - Выключить битву во время квестов',
                     '#enable_order - Включить приказы',
                     '#disable_order - Выключить приказы',
                     '#enable_auto_def - Включить авто деф',
@@ -494,6 +572,9 @@ def parse_text(text, username, message_id):
                     '#lt_arena - Дебаг, последняя битва на арене',
                     '#get_info_diff - Дебаг, последняя разница между запросами информации о герое',
                     '#ping - Дебаг, проверить жив ли бот',
+                    '#enable_build - Включить постройки',
+                    '#disable_build - Выключить постройки',
+                    '#build_target - указать цель постройки ({0})'.format(','.join(builds))
                 ]))
 
             # Вкл/выкл бота
@@ -538,6 +619,14 @@ def parse_text(text, username, message_id):
                 peshera_enabled = False
                 send_msg(admin_username, 'Пещера успешно выключена')
 
+            # Вкл/выкл побережье
+            elif text == '#enable_more':
+                more_enabled = True
+                send_msg(admin_username, 'Побережье успешно включено')
+            elif text == '#disable_more':
+                more_enabled = False
+                send_msg(admin_username, 'Побережье успешно выключено')
+
             # Вкл/выкл грабить корованы
             elif text == '#enable_grabit':
                 grabit_enabled = True
@@ -578,6 +667,14 @@ def parse_text(text, username, message_id):
                 donate_enabled = False
                 send_msg(admin_username, 'Донат успешно выключен')
 
+            # Вкл/выкл битву по время квеста
+            elif text == '#enable_quest_fight':
+                quest_fight_enabled = True
+                send_msg(admin_username, 'Битва включена')
+            elif text == '#disable_quest_fight':
+                quest_fight_enabled = False
+                send_msg(admin_username, 'Битва отключена')
+
             elif text == '#update_stock':
                 action_list.append('/stock')
                 sleep_time = random.randint(1, 3)
@@ -602,9 +699,12 @@ def parse_text(text, username, message_id):
                     '🛡Авто деф включен: {6}',
                     '💰Донат включен: {7}',
                     '🍺Таверна включена: {8}',
-                    'Гоп-стоп 🐫Корованов включен: {9}'
+                    'Гоп-стоп 🐫Корованов включен: {9}',
+                    '🏝Побережье включено: {10}',
+                    '🏘Постройка включена: {11}',
+                    '🚧Цель постройки: {12}'
                 ]).format(bot_enabled, arena_enabled, les_enabled, peshera_enabled, grabit_enabled, order_enabled,
-                          auto_def_enabled, donate_enabled, taverna_enabled, corovan_enabled))
+                          auto_def_enabled, donate_enabled, taverna_enabled, corovan_enabled,more_enabled,build_enabled,build_target))
 
             # Информация о герое
             elif text == '#hero':
@@ -617,6 +717,7 @@ def parse_text(text, username, message_id):
             elif text == '#log':
                 send_msg(admin_username, '\n'.join(log_list))
                 log_list.clear()
+                log('Лог запрошен и очищен')
 
             elif text == '#lt_arena':
                 send_msg(admin_username, str(dt.datetime.fromtimestamp(lt_arena).time()))
@@ -653,6 +754,23 @@ def parse_text(text, username, message_id):
                 else:
                     send_msg(admin_username, 'Команда ' + command + ' не распознана')
 
+            # Вкл/выкл построек
+            elif text == '#enable_build':
+                build_enabled = True
+                get_info_diff = random.randint(400, 500)
+                send_msg(admin_username, 'Постройка успешно включена')
+                log('Постройка успешно включена, скоро пойдем строить')
+            elif text == '#disable_build':
+                build_enabled = False
+                send_msg(admin_username, 'Постройка успешно выключена')
+
+            elif text.startswith('#build_target'):
+                command = text.split(' ')[1]
+                if command in builds:
+                    build_target = builds[command]
+                    send_msg(admin_username, 'Постройка ' + builds[command] + ' установлена')
+                else:
+                    send_msg(admin_username, 'Постройка ' + command + ' не распознана')
 
 def send_msg(to, message):
     sender.mark_read('@' + to)
@@ -721,9 +839,10 @@ def log(text):
     print(message)
     log_list.append(message)
 
+
 if __name__ == '__main__':
     receiver = Receiver(sock=socket_path) if socket_path else Receiver(port=port)
-    receiver.start()
+    receiver.start()  # start the Connector.
     _thread.start_new_thread(queue_worker, ())
     receiver.message(work_with_message(receiver))
     receiver.stop()
