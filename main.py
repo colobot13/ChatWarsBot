@@ -124,6 +124,7 @@ builds = {
     'warriors': '/build_warriors',
     'teaparty': '/build_teaparty',
     'hq': '/build_hq',
+    'hqrep': '/repare_hq',
     'gladiators': '/build_gladiators',
     'wall': '/build_wall',
     'ambar': '/build_ambar'
@@ -472,6 +473,7 @@ def parse_text(text, username, message_id):
 
             elif 'В казне недостаточно' in text:
                 log("Стройка не удалась, в замке нет денег")
+                lt_info = time()
 
             #  присмотрим за питомцем
             elif text.find('🛁') != -1 and text.find('🍼') != -1:
@@ -757,7 +759,6 @@ def parse_text(text, username, message_id):
             # Вкл/выкл построек
             elif text == '#enable_build':
                 build_enabled = True
-                get_info_diff = random.randint(400, 500)
                 send_msg(admin_username, 'Постройка успешно включена')
                 log('Постройка успешно включена, скоро пойдем строить')
             elif text == '#disable_build':
