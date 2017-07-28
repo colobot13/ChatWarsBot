@@ -783,7 +783,7 @@ def parse_text(text, username, message_id):
                     '#ping - Дебаг, проверить жив ли бот',
                     '#enable_build - Включить постройки',
                     '#disable_build - Выключить постройки',
-                    '#build_target - указать цель постройки ({0})'.format(','.join(builds))
+                    '#build_target - указать цель постройки ЛЮБАЯ КОМАНДА ВИДА /repair_wall'
                 ]))
 
             # Вкл/выкл бота
@@ -974,11 +974,13 @@ def parse_text(text, username, message_id):
 
             elif text.startswith('#build_target'):
                 command = text.split(' ')[1]
-                if command in builds:
-                    build_target = builds[command]
-                    send_msg(admin_username, 'Постройка ' + builds[command] + ' установлена')
-                else:
-                    send_msg(admin_username, 'Постройка ' + command + ' не распознана')
+                build_target = command
+                send_msg(admin_username, 'Постройка ' + command + ' установлена')
+                #if command in builds:
+                #    build_target = builds[command]
+                #    send_msg(admin_username, 'Постройка ' + builds[command] + ' установлена')
+                #else:
+                #    send_msg(admin_username, 'Постройка ' + command + ' не распознана')
 
 def send_msg(to, message):
     sender.mark_read('@' + to)
